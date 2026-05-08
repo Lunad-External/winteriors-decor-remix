@@ -1,0 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+
+/* Ensure maximum image rendering quality */
+img {
+  image-rendering: high-quality;
+  -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Winteriors Brand Colors - Light Theme */
+    --background: 0 0% 100%;
+    --foreground: 291 45% 22%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 291 45% 22%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 291 45% 22%;
+
+    /* Winteriors Purple - Primary Brand */
+    --primary: 291 64% 42%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Light Gray Surface */
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 291 45% 22%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 291 25% 42%;
+
+    /* Accent Purple Lighter */
+    --accent: 291 36% 82%;
+    --accent-foreground: 291 64% 42%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 291 64% 42%;
+
+    --radius: 0.5rem;
+
+    /* Custom Brand Variables */
+    --winteriors-purple: 291 64% 42%;
+    --winteriors-purple-light: 291 36% 82%;
+    --winteriors-purple-dark: 291 45% 22%;
+    --winteriors-purple-deep: 291 45% 15%;
+    --winteriors-gray: 220 10% 40%;
+    --winteriors-gray-light: 220 15% 95%;
+    --winteriors-gold: 45 90% 55%;
+    --winteriors-warm: 30 30% 97%;
+
+    /* Gradients */
+    --gradient-purple: linear-gradient(135deg, hsl(291, 64%, 42%) 0%, hsl(291, 50%, 55%) 100%);
+    --gradient-hero: linear-gradient(180deg, hsla(270, 40%, 12%, 0.6) 0%, hsla(270, 40%, 12%, 0.3) 50%, hsla(270, 40%, 12%, 0.7) 100%);
+    --gradient-card: linear-gradient(180deg, hsla(0, 0%, 100%, 0) 0%, hsla(0, 0%, 100%, 1) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(240, 5%, 98%) 0%, hsl(0, 0%, 100%) 100%);
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsla(0, 0%, 0%, 0.05);
+    --shadow-md: 0 4px 6px -1px hsla(0, 0%, 0%, 0.1), 0 2px 4px -2px hsla(0, 0%, 0%, 0.1);
+    --shadow-lg: 0 10px 15px -3px hsla(0, 0%, 0%, 0.1), 0 4px 6px -4px hsla(0, 0%, 0%, 0.1);
+    --shadow-xl: 0 20px 25px -5px hsla(0, 0%, 0%, 0.1), 0 8px 10px -6px hsla(0, 0%, 0%, 0.1);
+    --shadow-purple: 0 10px 30px -10px hsla(291, 64%, 42%, 0.4);
+    --shadow-card: 0 4px 20px hsla(0, 0%, 0%, 0.08);
+
+    /* Sidebar */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 291 64% 42%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 291 36% 82%;
+    --sidebar-accent-foreground: 291 64% 42%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 291 64% 50%;
+  }
+
+  .dark {
+    --background: 240 10% 5%;
+    --foreground: 0 0% 98%;
+
+    --card: 240 10% 8%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 240 10% 8%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 291 50% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 5% 15%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 240 5% 15%;
+    --muted-foreground: 240 5% 65%;
+
+    --accent: 291 30% 20%;
+    --accent-foreground: 291 50% 80%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5% 17%;
+    --input: 240 5% 17%;
+    --ring: 291 50% 60%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 291 50% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 291 30% 20%;
+    --sidebar-accent-foreground: 291 50% 80%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 291 50% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-poppins antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-poppins font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .hero-overlay {
+    background: var(--gradient-hero);
+  }
+
+  .card-hover {
+    @apply transition-all duration-500 ease-out;
+  }
+
+  .card-hover:hover {
+    @apply -translate-y-2;
+    box-shadow: var(--shadow-xl);
+  }
+
+  .project-card {
+    @apply relative overflow-hidden;
+  }
+
+  .project-card::before {
+    content: '';
+    @apply absolute inset-0 bg-primary/0 transition-all duration-500 z-10;
+  }
+
+  .project-card:hover::before {
+    @apply bg-primary/20;
+  }
+
+  .project-card img {
+    @apply transition-transform duration-700 ease-out;
+  }
+
+  .project-card:hover img {
+    @apply scale-110;
+  }
+
+  .link-underline {
+    @apply relative;
+  }
+
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary transition-all duration-300;
+  }
+
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  .section-padding-sm {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+
+  .container-custom {
+    @apply max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 xl:px-16;
+  }
+
+  .stat-number {
+    @apply text-5xl md:text-6xl lg:text-7xl font-bold text-primary;
+    background: var(--gradient-purple);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cta-gradient {
+    background: var(--gradient-purple);
+  }
+
+  .input-focus {
+    @apply focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all duration-300;
+  }
+
+  .glass {
+    @apply bg-background/80 backdrop-blur-md;
+  }
+
+  .reveal {
+    @apply opacity-0 translate-y-8 transition-all duration-700 ease-out;
+  }
+
+  .reveal.visible {
+    @apply opacity-100 translate-y-0;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: var(--gradient-purple);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .crisp-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .aspect-project {
+    aspect-ratio: 4 / 3;
+  }
+
+  .aspect-hero {
+    aspect-ratio: 16 / 9;
+  }
+
+  .text-shadow-hero {
+    text-shadow: 0 2px 12px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5);
+  }
+
+  .text-shadow-sm {
+    text-shadow: 0 1px 6px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4);
+  }
+
+  .text-shadow-card {
+    text-shadow: 0 1px 8px rgba(0,0,0,0.8), 0 0 3px rgba(0,0,0,0.5);
+  }
+}

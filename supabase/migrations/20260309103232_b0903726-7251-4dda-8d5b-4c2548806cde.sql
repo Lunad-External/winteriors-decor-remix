@@ -1,0 +1,1 @@
+UPDATE projects SET cover_path = REPLACE(cover_path, '=w1920', '=s0') WHERE cover_path LIKE '%=w1920';

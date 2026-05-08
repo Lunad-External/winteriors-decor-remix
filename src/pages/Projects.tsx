@@ -1,0 +1,98 @@
+import { useState } from "react";
+import { Layout } from "@/components/layout/Layout";
+import { motion, AnimatePresence } from "framer-motion";
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+import { useStorageProjects, storageCategories } from "@/hooks/useStorageProjects";
+import { ImageIcon } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+const ProjectCard = ({ project, index }: { project: any; index: number }) => {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}>
+      <Link to={`/projects/${encodeURIComponent(project.id)}`} className="group block relative overflow-hidden">
+        <div className="relative overflow-hidden bg-black aspect-[3/2] md:aspect-[4/3]">
+          {!loaded && !error && <Skeleton className="absolute inset-0" />}
+          {error ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-muted">
+              <ImageIcon className="w-12 h-12 text-muted-foreground/30" />
+            </div>
+          ) : (
+            <img src={project.coverImage} alt={project.title} className={`w-full h-full object-cover block transition-all duration-[1.5s] ease-out group-hover:scale-[1.05] ${loaded ? 'opacity-100' : 'opacity-0'}`} loading="eager" decoding="async" fetchPriority={index < 6 ? "high" : "auto"} onLoad={() => setLoaded(true)} onError={() => setError(true)} />
+          )}
+          <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 text-center bg-gradient-to-t from-black/60 via-black/20 to-transparent">
+            <h3 className="text-base md:text-lg lg:text-xl font-semibold text-white uppercase tracking-[0.12em] font-poppins leading-snug">{project.title}</h3>
+            <span className="text-[10px] md:text-xs text-white/50 uppercase tracking-[0.25em] mt-2 block">{project.category}</span>
+          </div>
+        </div>
+      </Link>
+    </motion.div>
+  );
+};
+
+const ProjectsPage = () => {
+  const [activeCategory, setActiveCategory] = useState("All");
+  const { projects, loading, error } = useStorageProjects();
+
+  const categoryOrder = ["offices", "retail", "education", "control room"];
+
+  const filteredProjects = activeCategory === "All"
+    ? [...projects].sort((a, b) => {
+        const aIdx = categoryOrder.indexOf(a.category.toLowerCase());
+        const bIdx = categoryOrder.indexOf(b.category.toLowerCase());
+        return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
+      })
+    : projects.filter(p => p.category.toLowerCase() === activeCategory.toLowerCase());
+
+  return (
+    <Layout>
+      <Helmet>
+        <title>Our Projects | Winteriors Decor LLC</title>
+        <meta name="description" content="Explore our portfolio of 600+ completed interior design and fit-out projects across Dubai and Abu Dhabi." />
+      </Helmet>
+
+      <section className="pt-20 md:pt-24 pb-0 bg-foreground">
+        <div className="max-w-5xl mx-auto px-6 py-4">
+          <div className="flex flex-wrap gap-x-1 gap-y-1 justify-center">
+            {storageCategories.map(category => (
+              <button key={category} onClick={() => setActiveCategory(category)} className={`text-[11px] md:text-xs uppercase tracking-[0.18em] font-medium px-5 py-2.5 transition-all duration-300 border ${activeCategory === category ? "bg-primary text-primary-foreground border-primary" : "bg-transparent text-white border-white/30 hover:text-white hover:border-white/50"}`}>
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-background pb-0">
+        {loading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="aspect-[4/5] md:aspect-[3/4]" />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-24 text-muted-foreground">
+            <p className="text-lg">Unable to load projects. Please try again later.</p>
+          </div>
+        ) : filteredProjects.length === 0 ? (
+          <div className="text-center py-24 text-muted-foreground">
+            <p className="text-lg">No projects found in this category.</p>
+          </div>
+        ) : (
+          <AnimatePresence mode="wait">
+            <motion.div key={activeCategory} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="grid grid-cols-1 md:grid-cols-2 gap-[3px]">
+              {filteredProjects.map((project, index) => (
+                <ProjectCard key={project.id} project={project} index={index} />
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </section>
+    </Layout>
+  );
+};
+
+export default ProjectsPage;
