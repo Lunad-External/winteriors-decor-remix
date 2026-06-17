@@ -5,7 +5,10 @@ import {
   projectCmsQuery,
   projectImagesQuery,
 } from "@/lib/public-data.queries";
-import type { StorageProjectDTO } from "@/lib/public-data.functions";
+import type {
+  StorageProjectDTO,
+  ProjectImageDTO,
+} from "@/lib/public-data.functions";
 
 export const Route = createFileRoute("/projects/$id")({
   loader: async ({ context, params }) => {
@@ -20,16 +23,17 @@ export const Route = createFileRoute("/projects/$id")({
     const project = (projects || []).find(
       (p) => p.id.toLowerCase() === params.id.toLowerCase(),
     );
-    let images: string[] = [];
+    let coverImage: string | null = project?.coverImage ?? null;
     if (project?.folder) {
-      images = await context.queryClient
+      const images = await context.queryClient
         .ensureQueryData(projectImagesQuery(project.folder))
-        .catch(() => [] as string[]);
+        .catch(() => [] as ProjectImageDTO[]);
+      if (images.length > 0) coverImage = images[0].url;
     }
     return {
-      title: project?.name ?? params.id,
+      title: project?.title ?? params.id,
       category: project?.category ?? null,
-      coverImage: images[0] ?? null,
+      coverImage,
     };
   },
   head: ({ params, loaderData }) => {
