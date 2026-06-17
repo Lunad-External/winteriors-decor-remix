@@ -19,6 +19,7 @@ import { Route as BlogsRouteImport } from './routes/blogs'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesCategorySlugRouteImport } from './routes/services.$categorySlug'
 import { Route as ProjectsIdRouteImport } from './routes/projects.$id'
@@ -89,6 +90,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProjectsRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
@@ -221,6 +227,7 @@ export interface FileRoutesByFullPath {
   '/projects/$id': typeof ProjectsIdRoute
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/projects/': typeof ProjectsIndexRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
 }
@@ -232,7 +239,6 @@ export interface FileRoutesByTo {
   '/clientele': typeof ClienteleRoute
   '/contact': typeof ContactRoute
   '/enquiry': typeof EnquiryRoute
-  '/projects': typeof ProjectsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin/blogs': typeof AdminBlogsRoute
@@ -253,6 +259,7 @@ export interface FileRoutesByTo {
   '/projects/$id': typeof ProjectsIdRoute
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin': typeof AdminIndexRoute
+  '/projects': typeof ProjectsIndexRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
 }
@@ -286,6 +293,7 @@ export interface FileRoutesById {
   '/projects/$id': typeof ProjectsIdRoute
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/projects/': typeof ProjectsIndexRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
 }
@@ -320,6 +328,7 @@ export interface FileRouteTypes {
     | '/projects/$id'
     | '/services/$categorySlug'
     | '/admin/'
+    | '/projects/'
     | '/admin/projects/$id'
     | '/services/$categorySlug/$subcategorySlug'
   fileRoutesByTo: FileRoutesByTo
@@ -331,7 +340,6 @@ export interface FileRouteTypes {
     | '/clientele'
     | '/contact'
     | '/enquiry'
-    | '/projects'
     | '/services'
     | '/unsubscribe'
     | '/admin/blogs'
@@ -352,6 +360,7 @@ export interface FileRouteTypes {
     | '/projects/$id'
     | '/services/$categorySlug'
     | '/admin'
+    | '/projects'
     | '/admin/projects/$id'
     | '/services/$categorySlug/$subcategorySlug'
   id:
@@ -384,6 +393,7 @@ export interface FileRouteTypes {
     | '/projects/$id'
     | '/services/$categorySlug'
     | '/admin/'
+    | '/projects/'
     | '/admin/projects/$id'
     | '/services/$categorySlug/$subcategorySlug'
   fileRoutesById: FileRoutesById
@@ -487,6 +497,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/projects/': {
+      id: '/projects/'
+      path: '/'
+      fullPath: '/projects/'
+      preLoaderRoute: typeof ProjectsIndexRouteImport
+      parentRoute: typeof ProjectsRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -643,10 +660,12 @@ const BlogsRouteWithChildren = BlogsRoute._addFileChildren(BlogsRouteChildren)
 
 interface ProjectsRouteChildren {
   ProjectsIdRoute: typeof ProjectsIdRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
 }
 
 const ProjectsRouteChildren: ProjectsRouteChildren = {
   ProjectsIdRoute: ProjectsIdRoute,
+  ProjectsIndexRoute: ProjectsIndexRoute,
 }
 
 const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
