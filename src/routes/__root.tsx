@@ -139,8 +139,7 @@ function RootComponent() {
             <ConversationSummaryProvider>
               <TooltipProvider>
                 <LoadingScreen />
-                <Toaster />
-                <Sonner />
+                <ClientToasters />
                 <AppShell />
               </TooltipProvider>
             </ConversationSummaryProvider>
