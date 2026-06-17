@@ -1,5 +1,29 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
+import Projects from "@/pages/Projects";
+import { storageProjectsQuery } from "@/lib/public-data.queries";
 
 export const Route = createFileRoute("/projects")({
-  component: () => <Outlet />,
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(storageProjectsQuery).catch(() => []),
+  head: () => ({
+    meta: [
+      { title: "Our Projects | Interior Design Portfolio — Winteriors Decor" },
+      {
+        name: "description",
+        content:
+          "Browse our portfolio of premium commercial interior design and fit-out projects across Dubai, Abu Dhabi and the UAE.",
+      },
+      { property: "og:title", content: "Our Projects — Winteriors Decor" },
+      {
+        property: "og:description",
+        content: "Explore signature interior design and fit-out projects delivered by Winteriors Decor LLC.",
+      },
+    ],
+  }),
+  component: ProjectsRouteComponent,
 });
+
+function ProjectsRouteComponent() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  return pathname.replace(/\/$/, "") === "/projects" ? <Projects /> : <Outlet />;
+}

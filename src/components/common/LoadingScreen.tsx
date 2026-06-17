@@ -6,9 +6,11 @@ export const LoadingScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const screen = document.querySelector(".loading-screen");
+    const progress = document.querySelector(".loading-progress");
     const fallbackTimeout = setTimeout(() => {
       setIsLoading(false);
-    }, 3000);
+    }, 1800);
 
     const tl = gsap.timeline({
       onComplete: () => {
@@ -17,18 +19,21 @@ export const LoadingScreen = () => {
       },
     });
 
-    tl.to(".loading-progress", {
+    tl.to(progress, {
       width: "100%",
       duration: 1.2,
       ease: "power2.inOut",
     })
-    .to(".loading-screen", {
+    .to(screen, {
       yPercent: -100,
       duration: 0.8,
       ease: "power3.inOut",
-    }, "+=0.2");
+    }, "+=0.1");
 
-    return () => clearTimeout(fallbackTimeout);
+    return () => {
+      clearTimeout(fallbackTimeout);
+      tl.kill();
+    };
   }, []);
 
   if (!isLoading) return null;
