@@ -42,7 +42,7 @@ export const Header = () => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsServicesOpen(false);
-  }, [location]);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
