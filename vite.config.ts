@@ -33,6 +33,9 @@ export default defineConfig({
         "react-router-dom": path.resolve(__dirname, "./src/lib/router-compat.tsx"),
       },
     },
+    ssr: {
+      noExternal: ["sonner", "framer-motion", "gsap", "@gsap/react", "embla-carousel-react"],
+    },
   },
   tanstackStart: {
     server: { entry: "server" },
