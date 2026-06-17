@@ -1,9 +1,10 @@
 import { ReactNode } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { 
-  LayoutDashboard, FolderOpen, Image, Users, FileText, 
-  Type, LogOut, ArrowLeft, Sparkles, ChevronRight, MessageSquare 
+import {
+  LayoutDashboard, FolderOpen, Image, Users, FileText,
+  Type, LogOut, ArrowLeft, Sparkles, ChevronRight, MessageSquare,
+  Newspaper, UserCircle, Building2, Quote, Wrench, MapPin,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import winteriorsLogo from "@/assets/logos/winteriors-logo.png";
@@ -11,6 +12,12 @@ import winteriorsLogo from "@/assets/logos/winteriors-logo.png";
 const navItems = [
   { label: "Dashboard", path: "/admin", icon: LayoutDashboard },
   { label: "Projects", path: "/admin/projects", icon: FolderOpen },
+  { label: "Blogs", path: "/admin/blogs", icon: Newspaper },
+  { label: "Services", path: "/admin/services", icon: Wrench },
+  { label: "Team", path: "/admin/team", icon: UserCircle },
+  { label: "Clients", path: "/admin/clients", icon: Building2 },
+  { label: "Testimonials", path: "/admin/testimonials", icon: Quote },
+  { label: "Offices", path: "/admin/offices", icon: MapPin },
   { label: "Enquiries", path: "/admin/enquiries", icon: MessageSquare },
   { label: "Pages", path: "/admin/pages", icon: FileText },
   { label: "Site Content", path: "/admin/content", icon: Type },

@@ -10,6 +10,7 @@ import { useStorageProjects } from "@/hooks/useStorageProjects";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 export default function AdminDashboard() {
   const { projects } = useStorageProjects();
@@ -17,14 +18,29 @@ export default function AdminDashboard() {
   const [syncLog, setSyncLog] = useState<string[]>([]);
   const { toast } = useToast();
 
-  const totalImages = projects.reduce((sum, p) => sum + p.imageCount, 0);
-  const categories = [...new Set(projects.map((p) => p.category.toLowerCase()))];
+  const { data: counts } = useQuery({
+    queryKey: ["admin-dashboard-counts"],
+    queryFn: async () => {
+      const [projRes, imgRes, pagesRes] = await Promise.all([
+        supabase.from("projects").select("id, category", { count: "exact" }).is("deleted_at", null),
+        supabase.from("project_images").select("id", { count: "exact", head: true }),
+        supabase.from("cms_pages").select("id", { count: "exact", head: true }),
+      ]);
+      const cats = new Set((projRes.data || []).map((p: any) => (p.category || "").toLowerCase()));
+      return {
+        projects: projRes.count ?? (projRes.data?.length || 0),
+        images: imgRes.count ?? 0,
+        categories: cats.size,
+        pages: Math.max(pagesRes.count ?? 0, 7),
+      };
+    },
+  });
 
   const stats = [
-    { label: "Projects", value: projects.length, icon: FolderOpen, gradient: "from-primary/20 to-primary/5" },
-    { label: "Images", value: totalImages, icon: Image, gradient: "from-emerald-500/20 to-emerald-500/5" },
-    { label: "Categories", value: categories.length, icon: Layers, gradient: "from-amber-500/20 to-amber-500/5" },
-    { label: "Live Pages", value: 7, icon: Eye, gradient: "from-blue-500/20 to-blue-500/5" },
+    { label: "Projects", value: counts?.projects ?? projects.length, icon: FolderOpen, gradient: "from-primary/20 to-primary/5" },
+    { label: "Images", value: counts?.images ?? projects.reduce((s, p) => s + p.imageCount, 0), icon: Image, gradient: "from-emerald-500/20 to-emerald-500/5" },
+    { label: "Categories", value: counts?.categories ?? 4, icon: Layers, gradient: "from-amber-500/20 to-amber-500/5" },
+    { label: "Live Pages", value: counts?.pages ?? 7, icon: Eye, gradient: "from-blue-500/20 to-blue-500/5" },
   ];
 
   const quickActions = [

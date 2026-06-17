@@ -14,6 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
+      blogs: {
+        Row: {
+          content: string | null
+          created_at: string
+          display_order: number
+          excerpt: string | null
+          external_url: string | null
+          id: string
+          image_url: string | null
+          is_published: boolean
+          published_date: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          display_order?: number
+          excerpt?: string | null
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          published_date?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          display_order?: number
+          excerpt?: string | null
+          external_url?: string | null
+          id?: string
+          image_url?: string | null
+          is_published?: boolean
+          published_date?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      clients: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          is_featured: boolean
+          logo_url: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          logo_url?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          is_featured?: boolean
+          logo_url?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cms_pages: {
         Row: {
           body: string
@@ -173,6 +251,51 @@ export type Database = {
         }
         Relationships: []
       }
+      offices: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          display_order: number
+          email: string | null
+          fax: string | null
+          id: string
+          is_active: boolean
+          mobile: string | null
+          po_box: string | null
+          tel: string | null
+          updated_at: string
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string
+          display_order?: number
+          email?: string | null
+          fax?: string | null
+          id?: string
+          is_active?: boolean
+          mobile?: string | null
+          po_box?: string | null
+          tel?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          display_order?: number
+          email?: string | null
+          fax?: string | null
+          id?: string
+          is_active?: boolean
+          mobile?: string | null
+          po_box?: string | null
+          tel?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -315,6 +438,95 @@ export type Database = {
           },
         ]
       }
+      service_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          meta_description: string | null
+          meta_title: string | null
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      service_subcategories: {
+        Row: {
+          category_id: string
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          meta_description: string | null
+          meta_title: string | null
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          meta_description?: string | null
+          meta_title?: string | null
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_subcategories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "service_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_content: {
         Row: {
           content_type: string
@@ -369,6 +581,81 @@ export type Database = {
           id?: string
           metadata?: Json | null
           reason?: string
+        }
+        Relationships: []
+      }
+      team_members: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          object_position: string | null
+          role: string
+          scale: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          object_position?: string | null
+          role: string
+          scale?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          object_position?: string | null
+          role?: string
+          scale?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      testimonials: {
+        Row: {
+          author: string
+          company: string | null
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          position: string | null
+          quote: string
+          updated_at: string
+        }
+        Insert: {
+          author: string
+          company?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          position?: string | null
+          quote: string
+          updated_at?: string
+        }
+        Update: {
+          author?: string
+          company?: string | null
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          position?: string | null
+          quote?: string
+          updated_at?: string
         }
         Relationships: []
       }
