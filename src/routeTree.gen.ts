@@ -19,6 +19,7 @@ import { Route as BlogsRouteImport } from './routes/blogs'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesCategorySlugRouteImport } from './routes/services.$categorySlug'
@@ -90,6 +91,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesIndexRoute = ServicesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ServicesRoute,
 } as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   id: '/',
@@ -228,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
 }
@@ -239,7 +246,6 @@ export interface FileRoutesByTo {
   '/clientele': typeof ClienteleRoute
   '/contact': typeof ContactRoute
   '/enquiry': typeof EnquiryRoute
-  '/services': typeof ServicesRouteWithChildren
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/clients': typeof AdminClientsRoute
@@ -260,6 +266,7 @@ export interface FileRoutesByTo {
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/projects': typeof ProjectsIndexRoute
+  '/services': typeof ServicesIndexRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
 }
@@ -294,6 +301,7 @@ export interface FileRoutesById {
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/projects/': typeof ProjectsIndexRoute
+  '/services/': typeof ServicesIndexRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
 }
@@ -329,6 +337,7 @@ export interface FileRouteTypes {
     | '/services/$categorySlug'
     | '/admin/'
     | '/projects/'
+    | '/services/'
     | '/admin/projects/$id'
     | '/services/$categorySlug/$subcategorySlug'
   fileRoutesByTo: FileRoutesByTo
@@ -340,7 +349,6 @@ export interface FileRouteTypes {
     | '/clientele'
     | '/contact'
     | '/enquiry'
-    | '/services'
     | '/unsubscribe'
     | '/admin/blogs'
     | '/admin/clients'
@@ -361,6 +369,7 @@ export interface FileRouteTypes {
     | '/services/$categorySlug'
     | '/admin'
     | '/projects'
+    | '/services'
     | '/admin/projects/$id'
     | '/services/$categorySlug/$subcategorySlug'
   id:
@@ -394,6 +403,7 @@ export interface FileRouteTypes {
     | '/services/$categorySlug'
     | '/admin/'
     | '/projects/'
+    | '/services/'
     | '/admin/projects/$id'
     | '/services/$categorySlug/$subcategorySlug'
   fileRoutesById: FileRoutesById
@@ -497,6 +507,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/services/': {
+      id: '/services/'
+      path: '/'
+      fullPath: '/services/'
+      preLoaderRoute: typeof ServicesIndexRouteImport
+      parentRoute: typeof ServicesRoute
     }
     '/projects/': {
       id: '/projects/'
@@ -686,10 +703,12 @@ const ServicesCategorySlugRouteWithChildren =
 
 interface ServicesRouteChildren {
   ServicesCategorySlugRoute: typeof ServicesCategorySlugRouteWithChildren
+  ServicesIndexRoute: typeof ServicesIndexRoute
 }
 
 const ServicesRouteChildren: ServicesRouteChildren = {
   ServicesCategorySlugRoute: ServicesCategorySlugRouteWithChildren,
+  ServicesIndexRoute: ServicesIndexRoute,
 }
 
 const ServicesRouteWithChildren = ServicesRoute._addFileChildren(

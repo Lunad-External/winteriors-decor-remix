@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { useStorageProjects, storageCategories } from "@/hooks/useStorageProjects";
 import { ImageIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -13,7 +13,7 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: index * 0.06, ease: [0.25, 0.46, 0.45, 0.94] }}>
-      <Link to={`/projects/${encodeURIComponent(project.id)}`} className="group block relative overflow-hidden">
+      <Link to="/projects/$id" params={{ id: String(project.id) }} className="group block relative overflow-hidden">
         <div className="relative overflow-hidden bg-black aspect-[3/2] md:aspect-[4/3]">
           {!loaded && !error && <Skeleton className="absolute inset-0" />}
           {error ? (
