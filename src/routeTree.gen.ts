@@ -9,38 +9,380 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as ServicesRouteImport } from './routes/services'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as EnquiryRouteImport } from './routes/enquiry'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ClienteleRouteImport } from './routes/clientele'
+import { Route as BlogsRouteImport } from './routes/blogs'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as ServicesCategorySlugRouteImport } from './routes/services.$categorySlug'
+import { Route as ProjectsIdRouteImport } from './routes/projects.$id'
+import { Route as BlogsSlugRouteImport } from './routes/blogs.$slug'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
+import { Route as AdminPagesRouteImport } from './routes/admin.pages'
+import { Route as AdminMediaRouteImport } from './routes/admin.media'
+import { Route as AdminLoginRouteImport } from './routes/admin.login'
+import { Route as AdminImagesRouteImport } from './routes/admin.images'
+import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
+import { Route as AdminContentRouteImport } from './routes/admin.content'
+import { Route as ServicesCategorySlugSubcategorySlugRouteImport } from './routes/services.$categorySlug.$subcategorySlug'
+import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
 
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesRoute = ServicesRouteImport.update({
+  id: '/services',
+  path: '/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EnquiryRoute = EnquiryRouteImport.update({
+  id: '/enquiry',
+  path: '/enquiry',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClienteleRoute = ClienteleRouteImport.update({
+  id: '/clientele',
+  path: '/clientele',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogsRoute = BlogsRouteImport.update({
+  id: '/blogs',
+  path: '/blogs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesCategorySlugRoute = ServicesCategorySlugRouteImport.update({
+  id: '/$categorySlug',
+  path: '/$categorySlug',
+  getParentRoute: () => ServicesRoute,
+} as any)
+const ProjectsIdRoute = ProjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ProjectsRoute,
+} as any)
+const BlogsSlugRoute = BlogsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogsRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminProjectsRoute = AdminProjectsRouteImport.update({
+  id: '/admin/projects',
+  path: '/admin/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPagesRoute = AdminPagesRouteImport.update({
+  id: '/admin/pages',
+  path: '/admin/pages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/admin/media',
+  path: '/admin/media',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminImagesRoute = AdminImagesRouteImport.update({
+  id: '/admin/images',
+  path: '/admin/images',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
+  id: '/admin/enquiries',
+  path: '/admin/enquiries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminContentRoute = AdminContentRouteImport.update({
+  id: '/admin/content',
+  path: '/admin/content',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ServicesCategorySlugSubcategorySlugRoute =
+  ServicesCategorySlugSubcategorySlugRouteImport.update({
+    id: '/$subcategorySlug',
+    path: '/$subcategorySlug',
+    getParentRoute: () => ServicesCategorySlugRoute,
+  } as any)
+const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminProjectsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blogs': typeof BlogsRouteWithChildren
+  '/clientele': typeof ClienteleRoute
+  '/contact': typeof ContactRoute
+  '/enquiry': typeof EnquiryRoute
+  '/projects': typeof ProjectsRouteWithChildren
+  '/services': typeof ServicesRouteWithChildren
+  '/unsubscribe': typeof UnsubscribeRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/images': typeof AdminImagesRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/pages': typeof AdminPagesRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/users': typeof AdminUsersRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/projects/$id': typeof ProjectsIdRoute
+  '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blogs': typeof BlogsRouteWithChildren
+  '/clientele': typeof ClienteleRoute
+  '/contact': typeof ContactRoute
+  '/enquiry': typeof EnquiryRoute
+  '/projects': typeof ProjectsRouteWithChildren
+  '/services': typeof ServicesRouteWithChildren
+  '/unsubscribe': typeof UnsubscribeRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/images': typeof AdminImagesRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/pages': typeof AdminPagesRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/users': typeof AdminUsersRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/projects/$id': typeof ProjectsIdRoute
+  '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
+  '/admin': typeof AdminIndexRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/blogs': typeof BlogsRouteWithChildren
+  '/clientele': typeof ClienteleRoute
+  '/contact': typeof ContactRoute
+  '/enquiry': typeof EnquiryRoute
+  '/projects': typeof ProjectsRouteWithChildren
+  '/services': typeof ServicesRouteWithChildren
+  '/unsubscribe': typeof UnsubscribeRoute
+  '/admin/content': typeof AdminContentRoute
+  '/admin/enquiries': typeof AdminEnquiriesRoute
+  '/admin/images': typeof AdminImagesRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
+  '/admin/pages': typeof AdminPagesRoute
+  '/admin/projects': typeof AdminProjectsRouteWithChildren
+  '/admin/users': typeof AdminUsersRoute
+  '/blogs/$slug': typeof BlogsSlugRoute
+  '/projects/$id': typeof ProjectsIdRoute
+  '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
+  '/admin/': typeof AdminIndexRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
+  '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/blogs'
+    | '/clientele'
+    | '/contact'
+    | '/enquiry'
+    | '/projects'
+    | '/services'
+    | '/unsubscribe'
+    | '/admin/content'
+    | '/admin/enquiries'
+    | '/admin/images'
+    | '/admin/login'
+    | '/admin/media'
+    | '/admin/pages'
+    | '/admin/projects'
+    | '/admin/users'
+    | '/blogs/$slug'
+    | '/projects/$id'
+    | '/services/$categorySlug'
+    | '/admin/'
+    | '/admin/projects/$id'
+    | '/services/$categorySlug/$subcategorySlug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/about'
+    | '/blogs'
+    | '/clientele'
+    | '/contact'
+    | '/enquiry'
+    | '/projects'
+    | '/services'
+    | '/unsubscribe'
+    | '/admin/content'
+    | '/admin/enquiries'
+    | '/admin/images'
+    | '/admin/login'
+    | '/admin/media'
+    | '/admin/pages'
+    | '/admin/projects'
+    | '/admin/users'
+    | '/blogs/$slug'
+    | '/projects/$id'
+    | '/services/$categorySlug'
+    | '/admin'
+    | '/admin/projects/$id'
+    | '/services/$categorySlug/$subcategorySlug'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/blogs'
+    | '/clientele'
+    | '/contact'
+    | '/enquiry'
+    | '/projects'
+    | '/services'
+    | '/unsubscribe'
+    | '/admin/content'
+    | '/admin/enquiries'
+    | '/admin/images'
+    | '/admin/login'
+    | '/admin/media'
+    | '/admin/pages'
+    | '/admin/projects'
+    | '/admin/users'
+    | '/blogs/$slug'
+    | '/projects/$id'
+    | '/services/$categorySlug'
+    | '/admin/'
+    | '/admin/projects/$id'
+    | '/services/$categorySlug/$subcategorySlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  BlogsRoute: typeof BlogsRouteWithChildren
+  ClienteleRoute: typeof ClienteleRoute
+  ContactRoute: typeof ContactRoute
+  EnquiryRoute: typeof EnquiryRoute
+  ProjectsRoute: typeof ProjectsRouteWithChildren
+  ServicesRoute: typeof ServicesRouteWithChildren
+  UnsubscribeRoute: typeof UnsubscribeRoute
+  AdminContentRoute: typeof AdminContentRoute
+  AdminEnquiriesRoute: typeof AdminEnquiriesRoute
+  AdminImagesRoute: typeof AdminImagesRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminMediaRoute: typeof AdminMediaRoute
+  AdminPagesRoute: typeof AdminPagesRoute
+  AdminProjectsRoute: typeof AdminProjectsRouteWithChildren
+  AdminUsersRoute: typeof AdminUsersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services': {
+      id: '/services'
+      path: '/services'
+      fullPath: '/services'
+      preLoaderRoute: typeof ServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/enquiry': {
+      id: '/enquiry'
+      path: '/enquiry'
+      fullPath: '/enquiry'
+      preLoaderRoute: typeof EnquiryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/clientele': {
+      id: '/clientele'
+      path: '/clientele'
+      fullPath: '/clientele'
+      preLoaderRoute: typeof ClienteleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blogs': {
+      id: '/blogs'
+      path: '/blogs'
+      fullPath: '/blogs'
+      preLoaderRoute: typeof BlogsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +390,184 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/$categorySlug': {
+      id: '/services/$categorySlug'
+      path: '/$categorySlug'
+      fullPath: '/services/$categorySlug'
+      preLoaderRoute: typeof ServicesCategorySlugRouteImport
+      parentRoute: typeof ServicesRoute
+    }
+    '/projects/$id': {
+      id: '/projects/$id'
+      path: '/$id'
+      fullPath: '/projects/$id'
+      preLoaderRoute: typeof ProjectsIdRouteImport
+      parentRoute: typeof ProjectsRoute
+    }
+    '/blogs/$slug': {
+      id: '/blogs/$slug'
+      path: '/$slug'
+      fullPath: '/blogs/$slug'
+      preLoaderRoute: typeof BlogsSlugRouteImport
+      parentRoute: typeof BlogsRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/projects': {
+      id: '/admin/projects'
+      path: '/admin/projects'
+      fullPath: '/admin/projects'
+      preLoaderRoute: typeof AdminProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/pages': {
+      id: '/admin/pages'
+      path: '/admin/pages'
+      fullPath: '/admin/pages'
+      preLoaderRoute: typeof AdminPagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/admin/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/images': {
+      id: '/admin/images'
+      path: '/admin/images'
+      fullPath: '/admin/images'
+      preLoaderRoute: typeof AdminImagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/enquiries': {
+      id: '/admin/enquiries'
+      path: '/admin/enquiries'
+      fullPath: '/admin/enquiries'
+      preLoaderRoute: typeof AdminEnquiriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/content': {
+      id: '/admin/content'
+      path: '/admin/content'
+      fullPath: '/admin/content'
+      preLoaderRoute: typeof AdminContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/services/$categorySlug/$subcategorySlug': {
+      id: '/services/$categorySlug/$subcategorySlug'
+      path: '/$subcategorySlug'
+      fullPath: '/services/$categorySlug/$subcategorySlug'
+      preLoaderRoute: typeof ServicesCategorySlugSubcategorySlugRouteImport
+      parentRoute: typeof ServicesCategorySlugRoute
+    }
+    '/admin/projects/$id': {
+      id: '/admin/projects/$id'
+      path: '/$id'
+      fullPath: '/admin/projects/$id'
+      preLoaderRoute: typeof AdminProjectsIdRouteImport
+      parentRoute: typeof AdminProjectsRoute
+    }
   }
 }
 
+interface BlogsRouteChildren {
+  BlogsSlugRoute: typeof BlogsSlugRoute
+}
+
+const BlogsRouteChildren: BlogsRouteChildren = {
+  BlogsSlugRoute: BlogsSlugRoute,
+}
+
+const BlogsRouteWithChildren = BlogsRoute._addFileChildren(BlogsRouteChildren)
+
+interface ProjectsRouteChildren {
+  ProjectsIdRoute: typeof ProjectsIdRoute
+}
+
+const ProjectsRouteChildren: ProjectsRouteChildren = {
+  ProjectsIdRoute: ProjectsIdRoute,
+}
+
+const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
+  ProjectsRouteChildren,
+)
+
+interface ServicesCategorySlugRouteChildren {
+  ServicesCategorySlugSubcategorySlugRoute: typeof ServicesCategorySlugSubcategorySlugRoute
+}
+
+const ServicesCategorySlugRouteChildren: ServicesCategorySlugRouteChildren = {
+  ServicesCategorySlugSubcategorySlugRoute:
+    ServicesCategorySlugSubcategorySlugRoute,
+}
+
+const ServicesCategorySlugRouteWithChildren =
+  ServicesCategorySlugRoute._addFileChildren(ServicesCategorySlugRouteChildren)
+
+interface ServicesRouteChildren {
+  ServicesCategorySlugRoute: typeof ServicesCategorySlugRouteWithChildren
+}
+
+const ServicesRouteChildren: ServicesRouteChildren = {
+  ServicesCategorySlugRoute: ServicesCategorySlugRouteWithChildren,
+}
+
+const ServicesRouteWithChildren = ServicesRoute._addFileChildren(
+  ServicesRouteChildren,
+)
+
+interface AdminProjectsRouteChildren {
+  AdminProjectsIdRoute: typeof AdminProjectsIdRoute
+}
+
+const AdminProjectsRouteChildren: AdminProjectsRouteChildren = {
+  AdminProjectsIdRoute: AdminProjectsIdRoute,
+}
+
+const AdminProjectsRouteWithChildren = AdminProjectsRoute._addFileChildren(
+  AdminProjectsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  BlogsRoute: BlogsRouteWithChildren,
+  ClienteleRoute: ClienteleRoute,
+  ContactRoute: ContactRoute,
+  EnquiryRoute: EnquiryRoute,
+  ProjectsRoute: ProjectsRouteWithChildren,
+  ServicesRoute: ServicesRouteWithChildren,
+  UnsubscribeRoute: UnsubscribeRoute,
+  AdminContentRoute: AdminContentRoute,
+  AdminEnquiriesRoute: AdminEnquiriesRoute,
+  AdminImagesRoute: AdminImagesRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminMediaRoute: AdminMediaRoute,
+  AdminPagesRoute: AdminPagesRoute,
+  AdminProjectsRoute: AdminProjectsRouteWithChildren,
+  AdminUsersRoute: AdminUsersRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
