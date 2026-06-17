@@ -33,9 +33,11 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     defaultPreload: "intent",
+    defaultPreloadStaleTime: 0,
     defaultErrorComponent: DefaultErrorComponent,
     scrollRestoration: true,
   });
+
 };
 
 declare module "@tanstack/react-router" {

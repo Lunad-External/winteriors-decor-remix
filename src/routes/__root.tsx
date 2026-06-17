@@ -8,7 +8,8 @@ import {
 } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { HelmetProvider } from "react-helmet-async";
-import { useState } from "react";
+import { siteContentQuery } from "@/lib/public-data.queries";
+
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ClientToasters } from "@/components/common/ClientToasters";
 import { LoadingScreen } from "@/components/common/LoadingScreen";
@@ -90,9 +91,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "apple-touch-icon", href: "/favicon.png" },
     ],
   }),
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(siteContentQuery).catch(() => ({})),
   errorComponent: ErrorComponent,
   component: RootComponent,
 });
+
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
