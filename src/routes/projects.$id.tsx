@@ -5,15 +5,14 @@ import {
   projectCmsQuery,
   projectImagesQuery,
 } from "@/lib/public-data.queries";
-import { getStorageProjectsFn } from "@/lib/public-data.functions";
+import type { StorageProjectDTO } from "@/lib/public-data.functions";
 
 export const Route = createFileRoute("/projects/$id")({
   loader: async ({ context, params }) => {
     const [projects] = await Promise.all([
-      context.queryClient.ensureQueryData({
-        ...storageProjectsQuery,
-        queryFn: () => getStorageProjectsFn(),
-      }).catch(() => []),
+      context.queryClient
+        .ensureQueryData(storageProjectsQuery)
+        .catch(() => [] as StorageProjectDTO[]),
       context.queryClient
         .ensureQueryData(projectCmsQuery(params.id))
         .catch(() => null),
@@ -29,3 +28,4 @@ export const Route = createFileRoute("/projects/$id")({
   },
   component: ProjectDetail,
 });
+
