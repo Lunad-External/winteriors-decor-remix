@@ -12,5 +12,26 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(storageProjectsQuery).catch(() => []),
     ]);
   },
+  head: () => ({
+    meta: [
+      { title: "Winteriors Decor LLC | Premium Interior Design & Fit-Out Dubai & Abu Dhabi" },
+      {
+        name: "description",
+        content:
+          "17+ years of excellence in commercial interior design and fit-out solutions across Dubai and Abu Dhabi.",
+      },
+      {
+        property: "og:title",
+        content: "Winteriors Decor LLC | Premium Interior Design & Fit-Out",
+      },
+      {
+        property: "og:description",
+        content:
+          "17+ years of excellence in commercial interior design and fit-out across the UAE.",
+      },
+      { property: "og:url", content: "/" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+  }),
   component: Index,
 });
