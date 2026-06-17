@@ -16,13 +16,9 @@ if (typeof globalThis !== "undefined") {
     g.localStorage = memoryStorage;
     if (typeof g.sessionStorage === "undefined") g.sessionStorage = memoryStorage;
   }
-  if (typeof g.window === "undefined") {
-    // Minimal window shim so libraries that touch window during import don't crash.
-    g.window = g;
-  }
-  if (typeof g.document === "undefined") {
-    g.document = { addEventListener: () => {}, removeEventListener: () => {}, documentElement: {}, body: {} };
-  }
+  // Intentionally do NOT polyfill `window` or `document` — many libraries
+  // (sonner, framer-motion, gsap) feature-detect via `typeof document` and
+  // skip browser-only code paths when undefined.
 }
 
 export {};
