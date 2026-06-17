@@ -134,7 +134,7 @@ function AppShell() {
 }
 
 function RootComponent() {
-  const [queryClient] = useState(() => new QueryClient());
+  const { queryClient } = Route.useRouteContext();
   return (
     <RootDocument>
       <HelmetProvider>
@@ -153,3 +153,4 @@ function RootComponent() {
     </RootDocument>
   );
 }
+
