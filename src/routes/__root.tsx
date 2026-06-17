@@ -1,3 +1,4 @@
+import "@/lib/ssr-polyfill";
 import {
   createRootRouteWithContext,
   HeadContent,

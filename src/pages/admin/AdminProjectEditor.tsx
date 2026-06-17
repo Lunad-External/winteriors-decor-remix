@@ -77,7 +77,7 @@ export default function AdminProjectEditor() {
       const { data: project, error } = await supabase
         .from("projects")
         .select("*")
-        .eq("slug", id)
+        .eq("slug", id ?? "")
         .maybeSingle();
 
       if (error || !project) {
