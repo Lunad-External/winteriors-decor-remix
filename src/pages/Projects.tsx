@@ -33,19 +33,65 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
   );
 };
 
+// Explicit display order matching the shared reference site
+const SLUG_ORDER: string[] = [
+  "confidential-procject-05",
+  "control-room",
+  "confidential-project-01-2",
+  "confidential-project-01-1",
+  "confidential-project-02",
+  "aes-office-auh",
+  "rhs-group",
+  "confidential-project-07",
+  "dmt-reception-unification",
+  "ilf-office-sky-tower",
+  "alpha-data",
+  "gulf-island-technical-oilfield-services",
+  "confidential-project-04-1",
+  "jacky-s-office",
+  "khadamat",
+  "confidential-project-06-1",
+  "dmt-reception-chairmans-toilet",
+  "winteriors-decor-office",
+  "confidential-project",
+  "daikin",
+  "confidential-project-03-1",
+  "daikin-dxb",
+  "confidential-project-02-1",
+  "metal-park-kezad",
+  "adoc",
+  "presight-by-g42",
+  "nmdc-auditorium",
+  "adsb-ceo-coo-room-fitout",
+  "samsung-dfc",
+  "vape-shop",
+  "hiyam-saloon-ksa-wss",
+  "flow-spa-riyadh",
+  "ben-s-cookies-mercato-dubai",
+  "samsung-abu-dhabi-mall",
+  "sts-fujairah",
+  "alfahim-training-room",
+  "bloom-education",
+  "provis-fdf-theater",
+  "karamah-school",
+  "sts-ras-al-khaimah",
+  "data-center-interior-design-execution-works",
+  "adnoc-eye-control-centre",
+  "environmental-intelligence-hub",
+];
+const slugRank = (slug: string) => {
+  const i = SLUG_ORDER.indexOf(slug);
+  return i === -1 ? 9999 : i;
+};
+
 const ProjectsPage = () => {
   const [activeCategory, setActiveCategory] = useState("All");
   const { projects, loading, error } = useStorageProjects();
 
-  const categoryOrder = ["offices", "retail", "education", "control room"];
-
+  const sorted = [...projects].sort((a, b) => slugRank(a.id) - slugRank(b.id));
   const filteredProjects = activeCategory === "All"
-    ? [...projects].sort((a, b) => {
-        const aIdx = categoryOrder.indexOf(a.category.toLowerCase());
-        const bIdx = categoryOrder.indexOf(b.category.toLowerCase());
-        return (aIdx === -1 ? 999 : aIdx) - (bIdx === -1 ? 999 : bIdx);
-      })
-    : projects.filter(p => p.category.toLowerCase() === activeCategory.toLowerCase());
+    ? sorted
+    : sorted.filter(p => p.category.toLowerCase() === activeCategory.toLowerCase());
 
   return (
     <Layout>
