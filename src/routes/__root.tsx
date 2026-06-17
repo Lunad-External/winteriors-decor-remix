@@ -1,5 +1,6 @@
 import "@/lib/ssr-polyfill";
 import {
+  ClientOnly,
   createRootRouteWithContext,
   HeadContent,
   Outlet,
@@ -59,20 +60,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { name: "author", content: "Winteriors Decor LLC" },
       { name: "theme-color", content: "#6b21a8" },
-      {
-        property: "og:title",
-        content: "Winteriors Decor LLC | Premium Interior Design & Fit-Out",
-      },
-      {
-        property: "og:description",
-        content:
-          "17+ years of excellence in commercial interior design and fit-out solutions across Dubai & Abu Dhabi.",
-      },
       { property: "og:type", content: "website" },
-      {
-        property: "og:image",
-        content: "https://lovable.dev/opengraph-image-p98pqg.png",
-      },
+      { property: "og:site_name", content: "Winteriors Decor LLC" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
@@ -86,7 +75,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap",
       },
-      { rel: "canonical", href: "https://winteriorsdecor.com" },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
     ],
@@ -104,7 +92,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body>
+      <body suppressHydrationWarning>
         {children}
         <Scripts />
       </body>
@@ -120,7 +108,9 @@ function AppShell() {
   return (
     <>
       {!isAdmin && <Header />}
-      <AdminToolbar />
+      <ClientOnly fallback={null}>
+        <AdminToolbar />
+      </ClientOnly>
       {isAdmin ? (
         <Outlet />
       ) : (
@@ -129,8 +119,10 @@ function AppShell() {
             <Outlet />
           </PageTransition>
           <Footer />
-          <WhatsAppFloat />
-          <CallFloat />
+          <ClientOnly fallback={null}>
+            <WhatsAppFloat />
+            <CallFloat />
+          </ClientOnly>
         </>
       )}
     </>
@@ -146,8 +138,10 @@ function RootComponent() {
           <AuthProvider>
             <ConversationSummaryProvider>
               <TooltipProvider>
-                <LoadingScreen />
-                <ClientToasters />
+                <ClientOnly fallback={null}>
+                  <LoadingScreen />
+                  <ClientToasters />
+                </ClientOnly>
                 <AppShell />
               </TooltipProvider>
             </ConversationSummaryProvider>
