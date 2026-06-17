@@ -1,44 +1,25 @@
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { siteContentQuery } from "@/lib/public-data.queries";
 
 type ContentMap = Record<string, string>;
 
-let cachedContent: ContentMap | null = null;
-let fetchPromise: Promise<ContentMap> | null = null;
-
-async function fetchContent(): Promise<ContentMap> {
-  const { data } = await supabase.from("site_content").select("key, value");
-  const map: ContentMap = {};
-  (data || []).forEach((row: any) => { map[row.key] = row.value; });
-  return map;
-}
-
 export function useSiteContent() {
-  const [content, setContent] = useState<ContentMap>(cachedContent || {});
-  const [loading, setLoading] = useState(!cachedContent);
-
-  useEffect(() => {
-    if (cachedContent) return;
-    
-    if (!fetchPromise) {
-      fetchPromise = fetchContent();
-    }
-
-    fetchPromise.then(data => {
-      cachedContent = data;
-      setContent(data);
-      setLoading(false);
-    });
-  }, []);
-
+  const { data, isLoading } = useQuery(siteContentQuery);
+  const content: ContentMap = data || {};
   const get = (key: string, fallback = ""): string => content[key] || fallback;
-  const getNum = (key: string, fallback = 0): number => parseInt(content[key]) || fallback;
-
-  return { content, get, getNum, loading };
+  const getNum = (key: string, fallback = 0): number =>
+    parseInt(content[key]) || fallback;
+  return { content, get, getNum, loading: isLoading };
 }
 
-// Invalidate cache (call after admin saves)
+export function useInvalidateSiteContent() {
+  const qc = useQueryClient();
+  return () => qc.invalidateQueries({ queryKey: siteContentQuery.queryKey });
+}
+
+// Back-compat: legacy callers used a module-level invalidator. Kept as no-op
+// since cache is now owned by React Query (use useInvalidateSiteContent in
+// components instead).
 export function invalidateSiteContent() {
-  cachedContent = null;
-  fetchPromise = null;
+  // no-op; see useInvalidateSiteContent
 }
