@@ -10,18 +10,18 @@ const confidentialRenames: Record<string, string> = {
 };
 
 const REPLACED_IMAGE_VERSION: Record<string, string> = {
-  "confidential-project-01-1/13.jpg": "202605060850",
-  "confidential-project-01-1/14.jpg": "202605060850",
-  "confidential-project-01-1/15.jpg": "202605060850",
-  "confidential-project-01-1/16.jpg": "202605060850",
-  "confidential-project-01-1/23.jpg": "202605060850",
-  "confidential-project-01-1/24.jpg": "202605060850",
-  "environmental-intelligence-hub/09.jpg": "202605060850",
-  "environmental-intelligence-hub/11.jpg": "202605060850",
-  "environmental-intelligence-hub/12.jpg": "202605060850",
-  "confidential-project-02/Meeting_room-1-5th_floor-v1.jpg": "202605060850",
-  "confidential-project-02/Reception_op-1_-_v1.jpg": "202605060850",
-  "confidential-project-02/Reception_op-1_-_v2.jpg": "202605060850",
+  "confidential-project-01-1/13.jpg": "202606221810",
+  "confidential-project-01-1/15.jpg": "202606221810",
+  "confidential-project-01-1/23.jpg": "202606221810",
+  "confidential-project-01-1/24.jpg": "202606221810",
+  "environmental-intelligence-hub/07.jpg": "202606221810",
+  "environmental-intelligence-hub/08.jpg": "202606221810",
+  "environmental-intelligence-hub/09.jpg": "202606221810",
+  "environmental-intelligence-hub/11.jpg": "202606221810",
+  "environmental-intelligence-hub/12.jpg": "202606221810",
+  "confidential-project-02/Meeting_room-1-5th_floor-v1.jpg": "202606221810",
+  "confidential-project-02/Reception_op-1_-_v1.jpg": "202606221810",
+  "confidential-project-02/Reception_op-1_-_v2.jpg": "202606221810",
 };
 
 function renameIfConfidential(title: string): string {
