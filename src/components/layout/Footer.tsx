@@ -83,21 +83,26 @@ export const Footer = forwardRef<HTMLElement>((_, ref) => {
                 ))}
               </div>
 
-              {/* Company profile PDF download temporarily removed — file deleted from repo.
-              <a
-                href="/winteriors-decor-company-profile-2026.pdf"
-                download
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 inline-flex w-full md:w-auto items-center gap-3 bg-white/10 hover:bg-white text-white hover:text-primary transition-colors px-4 py-3 rounded-sm group"
-              >
-                <Download className="w-5 h-5 flex-shrink-0" />
-                <span className="flex flex-col leading-tight">
-                  <span className="text-sm font-semibold font-poppins">Download Company Profile</span>
-                  <span className="text-xs opacity-70">PDF • 2026 Edition</span>
-                </span>
-              </a>
-              */}
+              {get("footer_company_profile_url") && (
+                <a
+                  href={get("footer_company_profile_url")}
+                  download={get("footer_company_profile_filename", "winteriors-decor-company-profile.pdf")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex w-full md:w-auto items-center gap-3 bg-white/10 hover:bg-white text-white hover:text-primary transition-colors px-4 py-3 rounded-sm group border border-white/15"
+                >
+                  <Download className="w-5 h-5 flex-shrink-0" />
+                  <span className="flex flex-col leading-tight text-left">
+                    <span className="text-sm font-semibold font-poppins">
+                      {get("footer_company_profile_label", "Download Company Profile")}
+                    </span>
+                    <span className="text-xs opacity-70">
+                      {get("footer_company_profile_sublabel", "PDF • 2026 Edition")}
+                    </span>
+                  </span>
+                </a>
+              )}
+
             </div>
 
             <div className="lg:col-span-2">

@@ -36,6 +36,7 @@ import { Route as AdminMediaRouteImport } from './routes/admin.media'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminImagesRouteImport } from './routes/admin.images'
 import { Route as AdminEnquiriesRouteImport } from './routes/admin.enquiries'
+import { Route as AdminDocumentsRouteImport } from './routes/admin.documents'
 import { Route as AdminContentRouteImport } from './routes/admin.content'
 import { Route as AdminClientsRouteImport } from './routes/admin.clients'
 import { Route as AdminBlogsRouteImport } from './routes/admin.blogs'
@@ -177,6 +178,11 @@ const AdminEnquiriesRoute = AdminEnquiriesRouteImport.update({
   path: '/admin/enquiries',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminDocumentsRoute = AdminDocumentsRouteImport.update({
+  id: '/admin/documents',
+  path: '/admin/documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminContentRoute = AdminContentRouteImport.update({
   id: '/admin/content',
   path: '/admin/content',
@@ -218,6 +224,7 @@ export interface FileRoutesByFullPath {
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/clients': typeof AdminClientsRoute
   '/admin/content': typeof AdminContentRoute
+  '/admin/documents': typeof AdminDocumentsRoute
   '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/images': typeof AdminImagesRoute
   '/admin/login': typeof AdminLoginRoute
@@ -250,6 +257,7 @@ export interface FileRoutesByTo {
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/clients': typeof AdminClientsRoute
   '/admin/content': typeof AdminContentRoute
+  '/admin/documents': typeof AdminDocumentsRoute
   '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/images': typeof AdminImagesRoute
   '/admin/login': typeof AdminLoginRoute
@@ -285,6 +293,7 @@ export interface FileRoutesById {
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/clients': typeof AdminClientsRoute
   '/admin/content': typeof AdminContentRoute
+  '/admin/documents': typeof AdminDocumentsRoute
   '/admin/enquiries': typeof AdminEnquiriesRoute
   '/admin/images': typeof AdminImagesRoute
   '/admin/login': typeof AdminLoginRoute
@@ -321,6 +330,7 @@ export interface FileRouteTypes {
     | '/admin/blogs'
     | '/admin/clients'
     | '/admin/content'
+    | '/admin/documents'
     | '/admin/enquiries'
     | '/admin/images'
     | '/admin/login'
@@ -353,6 +363,7 @@ export interface FileRouteTypes {
     | '/admin/blogs'
     | '/admin/clients'
     | '/admin/content'
+    | '/admin/documents'
     | '/admin/enquiries'
     | '/admin/images'
     | '/admin/login'
@@ -387,6 +398,7 @@ export interface FileRouteTypes {
     | '/admin/blogs'
     | '/admin/clients'
     | '/admin/content'
+    | '/admin/documents'
     | '/admin/enquiries'
     | '/admin/images'
     | '/admin/login'
@@ -422,6 +434,7 @@ export interface RootRouteChildren {
   AdminBlogsRoute: typeof AdminBlogsRoute
   AdminClientsRoute: typeof AdminClientsRoute
   AdminContentRoute: typeof AdminContentRoute
+  AdminDocumentsRoute: typeof AdminDocumentsRoute
   AdminEnquiriesRoute: typeof AdminEnquiriesRoute
   AdminImagesRoute: typeof AdminImagesRoute
   AdminLoginRoute: typeof AdminLoginRoute
@@ -627,6 +640,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEnquiriesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/documents': {
+      id: '/admin/documents'
+      path: '/admin/documents'
+      fullPath: '/admin/documents'
+      preLoaderRoute: typeof AdminDocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/content': {
       id: '/admin/content'
       path: '/admin/content'
@@ -741,6 +761,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminBlogsRoute: AdminBlogsRoute,
   AdminClientsRoute: AdminClientsRoute,
   AdminContentRoute: AdminContentRoute,
+  AdminDocumentsRoute: AdminDocumentsRoute,
   AdminEnquiriesRoute: AdminEnquiriesRoute,
   AdminImagesRoute: AdminImagesRoute,
   AdminLoginRoute: AdminLoginRoute,

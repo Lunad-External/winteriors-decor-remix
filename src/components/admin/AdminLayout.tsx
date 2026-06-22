@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import {
   LayoutDashboard, FolderOpen, Image, Users, FileText,
   Type, LogOut, ArrowLeft, Sparkles, ChevronRight, MessageSquare,
-  Newspaper, UserCircle, Building2, Quote, Wrench, MapPin,
+  Newspaper, UserCircle, Building2, Quote, Wrench, MapPin, FileBox,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import winteriorsLogo from "@/assets/logos/winteriors-logo.png";
@@ -21,9 +21,11 @@ const navItems = [
   { label: "Enquiries", path: "/admin/enquiries", icon: MessageSquare },
   { label: "Pages", path: "/admin/pages", icon: FileText },
   { label: "Site Content", path: "/admin/content", icon: Type },
+  { label: "Documents", path: "/admin/documents", icon: FileBox },
   { label: "Media", path: "/admin/media", icon: Image },
   { label: "Users", path: "/admin/users", icon: Users },
 ];
+
 
 export function AdminLayout({ children }: { children: ReactNode }) {
   const { user, isAdmin, loading, signOut } = useAuth();
