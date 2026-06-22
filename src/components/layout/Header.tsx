@@ -100,7 +100,7 @@ export const Header = () => {
                   <div key={link.path} ref={dropdownRef} className="relative">
                     <button
                       onClick={() => setIsServicesOpen(!isServicesOpen)}
-                      className={`flex items-center gap-1 text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-1 text-sm font-medium cursor-pointer transition-colors ${
                         location.pathname === link.path
                           ? solidHeader
                             ? "text-primary"
