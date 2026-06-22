@@ -7,18 +7,21 @@ export const Route = createFileRoute("/projects")({
     context.queryClient.ensureQueryData(storageProjectsQuery).catch(() => []),
   head: () => ({
     meta: [
-      { title: "Our Projects | Interior Design Portfolio — Winteriors Decor" },
+      { title: "Interior Design & Fit-Out Projects Portfolio | Winteriors" },
       {
         name: "description",
         content:
-          "Browse our portfolio of premium commercial interior design and fit-out projects across Dubai, Abu Dhabi and the UAE.",
+          "Explore Winteriors Decor's portfolio of commercial interior design and turnkey fit-out projects — offices, clinics, retail and hospitality across Dubai and Abu Dhabi.",
       },
-      { property: "og:title", content: "Our Projects — Winteriors Decor" },
+      { property: "og:title", content: "Interior Design & Fit-Out Projects | Winteriors Decor" },
       {
         property: "og:description",
-        content: "Explore signature interior design and fit-out projects delivered by Winteriors Decor LLC.",
+        content:
+          "Signature commercial interior design and fit-out projects delivered across the UAE by Winteriors Decor LLC.",
       },
+      { property: "og:url", content: "/projects" },
     ],
+    links: [{ rel: "canonical", href: "/projects" }],
   }),
   component: ProjectsRouteComponent,
 });
