@@ -11,12 +11,16 @@ export const Route = createFileRoute("/services/$categorySlug/$subcategorySlug")
       .replace(/\b\w/g, (c) => c.toUpperCase());
     return {
       meta: [
-        { title: `${title} | ${parent} — Winteriors Decor` },
+        { title: `${title} | ${parent} Services — Winteriors Decor` },
         {
           name: "description",
-          content: `${title} (${parent}) services by Winteriors Decor LLC.`,
+          content: `Expert ${title.toLowerCase()} as part of our ${parent.toLowerCase()} offering — commercial interior design and turnkey fit-out by Winteriors Decor LLC in Dubai & the UAE.`,
         },
-        { property: "og:title", content: `${title} — Winteriors Decor` },
+        { property: "og:title", content: `${title} | ${parent} — Winteriors Decor` },
+        {
+          property: "og:description",
+          content: `Specialist ${title.toLowerCase()} services for commercial projects across Dubai, Abu Dhabi and the UAE.`,
+        },
         {
           property: "og:url",
           content: `/services/${params.categorySlug}/${params.subcategorySlug}`,

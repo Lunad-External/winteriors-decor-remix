@@ -7,16 +7,17 @@ export const Route = createFileRoute("/contact")({
     context.queryClient.ensureQueryData(siteContentQuery).catch(() => ({})),
   head: () => ({
     meta: [
-      { title: "Contact Us | Get a Quote — Winteriors Decor LLC" },
+      { title: "Contact Winteriors Decor | Fit-Out Quote in Dubai & UAE" },
       {
         name: "description",
         content:
-          "Get in touch with Winteriors Decor LLC for interior design and fit-out projects in Dubai, Abu Dhabi and across the UAE.",
+          "Contact Winteriors Decor LLC for a free consultation or quote on commercial interior design and turnkey fit-out projects in Dubai, Abu Dhabi and across the UAE.",
       },
-      { property: "og:title", content: "Contact Winteriors Decor LLC" },
+      { property: "og:title", content: "Contact Winteriors Decor | Interior Fit-Out Dubai" },
       {
         property: "og:description",
-        content: "Reach out for a consultation or project quote.",
+        content:
+          "Talk to our team about your next commercial interior design or fit-out project in the UAE.",
       },
       { property: "og:url", content: "/contact" },
     ],

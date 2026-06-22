@@ -8,12 +8,16 @@ export const Route = createFileRoute("/services/$categorySlug")({
       .replace(/\b\w/g, (c) => c.toUpperCase());
     return {
       meta: [
-        { title: `${title} | Services — Winteriors Decor` },
+        { title: `${title} Services in Dubai & UAE | Winteriors Decor` },
         {
           name: "description",
-          content: `${title} services by Winteriors Decor LLC — interior design and fit-out across the UAE.`,
+          content: `Professional ${title.toLowerCase()} services by Winteriors Decor LLC — commercial interior design and turnkey fit-out solutions across Dubai, Abu Dhabi and the UAE.`,
         },
-        { property: "og:title", content: `${title} — Winteriors Decor` },
+        { property: "og:title", content: `${title} Services | Winteriors Decor Dubai` },
+        {
+          property: "og:description",
+          content: `Expert ${title.toLowerCase()} services for offices, retail, clinics and hospitality projects across the UAE.`,
+        },
         { property: "og:url", content: `/services/${params.categorySlug}` },
       ],
       links: [{ rel: "canonical", href: `/services/${params.categorySlug}` }],
