@@ -7,16 +7,17 @@ export const Route = createFileRoute("/services/")({
     context.queryClient.ensureQueryData(siteContentQuery).catch(() => ({})),
   head: () => ({
     meta: [
-      { title: "Our Services | Interior Design & Fit-Out — Winteriors Decor" },
+      { title: "Interior Design & Fit-Out Services in Dubai & Abu Dhabi" },
       {
         name: "description",
         content:
-          "Comprehensive interior design, turnkey fit-out, project management, space planning and refurbishment services across the UAE.",
+          "Turnkey commercial fit-out, interior design, MEP, joinery, project management and refurbishment services for offices, retail, clinics and hospitality across the UAE.",
       },
-      { property: "og:title", content: "Our Services — Winteriors Decor" },
+      { property: "og:title", content: "Interior Design & Fit-Out Services | Winteriors Decor" },
       {
         property: "og:description",
-        content: "Interior design, fit-out, project management and refurbishment in Dubai & Abu Dhabi.",
+        content:
+          "End-to-end interior design, fit-out, project management and refurbishment services in Dubai, Abu Dhabi and the UAE.",
       },
       { property: "og:url", content: "/services" },
     ],
