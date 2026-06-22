@@ -237,7 +237,7 @@ export const Header = () => {
                                 setIsMobileMenuOpen(false);
                                 handleServiceClick(service.id);
                               }}
-                              className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                              className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                             >
                               {service.name}
                             </button>
