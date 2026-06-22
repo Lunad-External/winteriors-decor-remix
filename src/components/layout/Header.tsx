@@ -134,7 +134,7 @@ export const Header = () => {
                             <button
                               key={service.id}
                               onClick={() => handleServiceClick(service.id)}
-                              className="block w-full text-left px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                              className="block w-full text-left px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
                             >
                               {service.name}
                             </button>
