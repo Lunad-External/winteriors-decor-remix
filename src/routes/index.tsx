@@ -14,20 +14,20 @@ export const Route = createFileRoute("/")({
   },
   head: () => ({
     meta: [
-      { title: "Winteriors Decor LLC | Premium Interior Design & Fit-Out Dubai & Abu Dhabi" },
+      { title: "Interior Design & Fit-Out Contractor Dubai | Winteriors" },
       {
         name: "description",
         content:
-          "17+ years of excellence in commercial interior design and fit-out solutions across Dubai and Abu Dhabi.",
+          "Award-winning commercial interior design and turnkey fit-out company in Dubai. 17+ years delivering offices, clinics, retail and hospitality across the UAE.",
       },
       {
         property: "og:title",
-        content: "Winteriors Decor LLC | Premium Interior Design & Fit-Out",
+        content: "Interior Design & Fit-Out Contractor Dubai | Winteriors Decor",
       },
       {
         property: "og:description",
         content:
-          "17+ years of excellence in commercial interior design and fit-out across the UAE.",
+          "Premium commercial interior design and turnkey fit-out across Dubai, Abu Dhabi and the UAE — offices, clinics, retail and hospitality.",
       },
       { property: "og:url", content: "/" },
     ],
