@@ -7,16 +7,17 @@ export const Route = createFileRoute("/about")({
     context.queryClient.ensureQueryData(siteContentQuery).catch(() => ({})),
   head: () => ({
     meta: [
-      { title: "About Winteriors Decor LLC | 17+ Years of Excellence" },
+      { title: "About Winteriors Decor | Interior Fit-Out Experts Dubai" },
       {
         name: "description",
         content:
-          "Discover Winteriors Decor LLC - a leading interior design and fit-out company in Dubai & Abu Dhabi with over 17 years of expertise.",
+          "Learn about Winteriors Decor LLC — 17+ years designing and delivering premium commercial interiors and turnkey fit-outs across Dubai, Abu Dhabi and the UAE.",
       },
-      { property: "og:title", content: "About Winteriors Decor LLC" },
+      { property: "og:title", content: "About Winteriors Decor | Fit-Out Experts in Dubai" },
       {
         property: "og:description",
-        content: "17+ years delivering premium interior design and fit-out across the UAE.",
+        content:
+          "Leading interior design and turnkey fit-out company in the UAE with 17+ years of commercial project experience.",
       },
       { property: "og:url", content: "/about" },
     ],
