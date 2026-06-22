@@ -100,7 +100,7 @@ export const Header = () => {
                   <div key={link.path} ref={dropdownRef} className="relative">
                     <button
                       onClick={() => setIsServicesOpen(!isServicesOpen)}
-                      className={`flex items-center gap-1 text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-1 text-sm font-medium cursor-pointer transition-colors ${
                         location.pathname === link.path
                           ? solidHeader
                             ? "text-primary"
@@ -134,7 +134,7 @@ export const Header = () => {
                             <button
                               key={service.id}
                               onClick={() => handleServiceClick(service.id)}
-                              className="block w-full text-left px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+                              className="block w-full text-left px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors cursor-pointer"
                             >
                               {service.name}
                             </button>
@@ -237,7 +237,7 @@ export const Header = () => {
                                 setIsMobileMenuOpen(false);
                                 handleServiceClick(service.id);
                               }}
-                              className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                              className="block w-full text-left py-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                             >
                               {service.name}
                             </button>
