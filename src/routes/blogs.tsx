@@ -4,16 +4,17 @@ import Blogs from "@/pages/Blogs";
 export const Route = createFileRoute("/blogs")({
   head: () => ({
     meta: [
-      { title: "Blog | Interior Design Insights — Winteriors Decor" },
+      { title: "Interior Design & Fit-Out Blog | Winteriors Decor Dubai" },
       {
         name: "description",
         content:
-          "Industry insights, trends and stories on commercial interior design and fit-out from the Winteriors Decor team.",
+          "Expert insights, trends and case studies on commercial interior design, turnkey fit-out and workspace strategy in Dubai, Abu Dhabi and the wider UAE market.",
       },
-      { property: "og:title", content: "Winteriors Decor Blog" },
+      { property: "og:title", content: "Interior Design & Fit-Out Blog | Winteriors Decor" },
       {
         property: "og:description",
-        content: "Insights and trends on interior design and fit-out in the UAE.",
+        content:
+          "Insights, trends and case studies on commercial interior design and fit-out across the UAE.",
       },
       { property: "og:url", content: "/blogs" },
     ],
