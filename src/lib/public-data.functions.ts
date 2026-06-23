@@ -120,7 +120,7 @@ export const getStorageProjectsFn = createServerFn({ method: "GET" }).handler(
 );
 
 export const getProjectImagesFn = createServerFn({ method: "GET" })
-  .inputValidator((input) => z.object({ folder: z.string().min(1) }).parse(input))
+  .validator((input) => z.object({ folder: z.string().min(1) }).parse(input))
   .handler(async ({ data }): Promise<ProjectImageDTO[]> => {
     const supabase = getServerSupabase();
     const folder = data.folder.trim();
@@ -144,7 +144,7 @@ export const getProjectImagesFn = createServerFn({ method: "GET" })
   });
 
 export const getProjectCmsFn = createServerFn({ method: "GET" })
-  .inputValidator((input) => z.object({ slug: z.string().min(1) }).parse(input))
+  .validator((input) => z.object({ slug: z.string().min(1) }).parse(input))
   .handler(async ({ data }): Promise<ProjectCmsDTO | null> => {
     const supabase = getServerSupabase();
     const { data: row } = await supabase
