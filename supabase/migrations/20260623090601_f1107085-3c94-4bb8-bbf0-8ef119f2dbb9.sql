@@ -1,0 +1,11 @@
+GRANT SELECT ON public.projects TO anon;
+GRANT SELECT ON public.project_images TO anon;
+GRANT SELECT ON public.service_categories TO anon;
+GRANT SELECT ON public.service_subcategories TO anon;
+GRANT SELECT ON public.team_members TO anon;
+GRANT SELECT ON public.clients TO anon;
+GRANT SELECT ON public.testimonials TO anon;
+GRANT SELECT ON public.blogs TO anon;
+GRANT SELECT ON public.offices TO anon;
+GRANT SELECT ON public.site_content TO anon;
+GRANT SELECT ON public.cms_pages TO anon;
