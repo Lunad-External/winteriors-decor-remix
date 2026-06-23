@@ -100,7 +100,9 @@ export const getStorageProjectsFn = createServerFn({ method: "GET" }).handler(
         .select(
           "slug, title, category, drive_folder_id, cover_path, image_count, status, deleted_at",
         );
+      console.error("[getStorageProjectsFn]", { count: data?.length, error, hasUrl: !!process.env.SUPABASE_URL, hasKey: !!process.env.SUPABASE_PUBLISHABLE_KEY, hasViteUrl: !!process.env.VITE_SUPABASE_URL });
       if (error) {
+
         console.error("getStorageProjectsFn supabase error:", error);
         return [];
       }
