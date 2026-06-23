@@ -92,7 +92,7 @@ export const getSiteContentFn = createServerFn({ method: "GET" }).handler(
 );
 
 export const getStorageProjectsFn = createServerFn({ method: "GET" }).handler(
-  async (): Promise<StorageProjectDTO[]> => {
+  async (): Promise<StorageProjectDTO[]> => { try {
     const supabase = getServerSupabase();
     const { data, error } = await supabase
       .from("projects")
@@ -116,7 +116,7 @@ export const getStorageProjectsFn = createServerFn({ method: "GET" }).handler(
         coverImage: p.cover_path ? getStorageUrl(p.cover_path) : "",
         imageCount: p.image_count || 0,
       }));
-  },
+  } catch (e) { console.error("getStorageProjectsFn ERR", e); throw e; } },
 );
 
 export const getProjectImagesFn = createServerFn({ method: "GET" })
