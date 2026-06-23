@@ -92,32 +92,42 @@ export const getSiteContentFn = createServerFn({ method: "GET" }).handler(
 );
 
 export const getStorageProjectsFn = createServerFn({ method: "GET" }).handler(
-  async (): Promise<StorageProjectDTO[]> => { try {
-    const supabase = getServerSupabase();
-    const { data, error } = await supabase
-      .from("projects")
-      .select(
-        "slug, title, category, drive_folder_id, cover_path, image_count, status, deleted_at",
-      );
-    if (error || !data) return [];
-    return data
-      .filter(
-        (p: any) =>
-          p.image_count > 0 &&
-          p.cover_path &&
-          p.status !== "draft" &&
-          !p.deleted_at,
-      )
-      .map((p: any) => ({
-        id: p.slug,
-        title: renameIfConfidential(p.title),
-        category: normalizeCategory(p.category),
-        folder: p.drive_folder_id || p.slug,
-        coverImage: p.cover_path ? getStorageUrl(p.cover_path) : "",
-        imageCount: p.image_count || 0,
-      }));
-  } catch (e) { console.error("getStorageProjectsFn ERR", e); throw e; } },
+  async (): Promise<StorageProjectDTO[]> => {
+    try {
+      const supabase = getServerSupabase();
+      const { data, error } = await supabase
+        .from("projects")
+        .select(
+          "slug, title, category, drive_folder_id, cover_path, image_count, status, deleted_at",
+        );
+      if (error) {
+        console.error("getStorageProjectsFn supabase error:", error);
+        return [];
+      }
+      if (!data) return [];
+      return data
+        .filter(
+          (p: any) =>
+            p.image_count > 0 &&
+            p.cover_path &&
+            p.status !== "draft" &&
+            !p.deleted_at,
+        )
+        .map((p: any) => ({
+          id: p.slug,
+          title: renameIfConfidential(p.title),
+          category: normalizeCategory(p.category),
+          folder: p.drive_folder_id || p.slug,
+          coverImage: p.cover_path ? getStorageUrl(p.cover_path) : "",
+          imageCount: p.image_count || 0,
+        }));
+    } catch (e) {
+      console.error("getStorageProjectsFn threw:", e);
+      return [];
+    }
+  },
 );
+
 
 export const getProjectImagesFn = createServerFn({ method: "GET" })
   .validator((input) => z.object({ folder: z.string().min(1) }).parse(input))
