@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as EnquiryRouteImport } from './routes/enquiry'
@@ -46,6 +47,11 @@ import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id
 const UnsubscribeRoute = UnsubscribeRouteImport.update({
   id: '/unsubscribe',
   path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ServicesRoute = ServicesRouteImport.update({
@@ -220,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/enquiry': typeof EnquiryRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/clients': typeof AdminClientsRoute
@@ -253,6 +260,7 @@ export interface FileRoutesByTo {
   '/clientele': typeof ClienteleRoute
   '/contact': typeof ContactRoute
   '/enquiry': typeof EnquiryRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/clients': typeof AdminClientsRoute
@@ -289,6 +297,7 @@ export interface FileRoutesById {
   '/enquiry': typeof EnquiryRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin/blogs': typeof AdminBlogsRoute
   '/admin/clients': typeof AdminClientsRoute
@@ -326,6 +335,7 @@ export interface FileRouteTypes {
     | '/enquiry'
     | '/projects'
     | '/services'
+    | '/sitemap.xml'
     | '/unsubscribe'
     | '/admin/blogs'
     | '/admin/clients'
@@ -359,6 +369,7 @@ export interface FileRouteTypes {
     | '/clientele'
     | '/contact'
     | '/enquiry'
+    | '/sitemap.xml'
     | '/unsubscribe'
     | '/admin/blogs'
     | '/admin/clients'
@@ -394,6 +405,7 @@ export interface FileRouteTypes {
     | '/enquiry'
     | '/projects'
     | '/services'
+    | '/sitemap.xml'
     | '/unsubscribe'
     | '/admin/blogs'
     | '/admin/clients'
@@ -430,6 +442,7 @@ export interface RootRouteChildren {
   EnquiryRoute: typeof EnquiryRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
   ServicesRoute: typeof ServicesRouteWithChildren
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   AdminBlogsRoute: typeof AdminBlogsRoute
   AdminClientsRoute: typeof AdminClientsRoute
@@ -456,6 +469,13 @@ declare module '@tanstack/react-router' {
       path: '/unsubscribe'
       fullPath: '/unsubscribe'
       preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/services': {
@@ -757,6 +777,7 @@ const rootRouteChildren: RootRouteChildren = {
   EnquiryRoute: EnquiryRoute,
   ProjectsRoute: ProjectsRouteWithChildren,
   ServicesRoute: ServicesRouteWithChildren,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   AdminBlogsRoute: AdminBlogsRoute,
   AdminClientsRoute: AdminClientsRoute,
