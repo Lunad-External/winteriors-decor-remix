@@ -80,7 +80,7 @@ const ServicesPage = () => {
                         contentKey={`service_${n}_title`}
                         fallback={def.title}
                         value={get(`service_${n}_title`)}
-                        as="h3"
+                        as="h2"
                         className="text-2xl md:text-3xl font-bold text-foreground mb-4 font-poppins"
                         page="services"
                         label={`Service ${n} Title`}

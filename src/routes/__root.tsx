@@ -49,28 +49,48 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1.0" },
-      {
-        title:
-          "Winteriors Decor LLC | Premium Interior Design & Fit-Out Dubai & Abu Dhabi",
-      },
-      {
-        name: "description",
-        content:
-          "Winteriors Decor LLC - 17+ years of excellence in commercial interior design and fit-out solutions.",
-      },
+      { title: "Winteriors Decor | Interior Design & Fit Out UAE" },
+      { name: "description", content: "17+ years of excellence in commercial interior design and fit-out solutions across Dubai & Abu Dhabi" },
       { name: "author", content: "Winteriors Decor LLC" },
       { name: "theme-color", content: "#6b21a8" },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Winteriors Decor LLC" },
-      { title: "Winteriors Decor | Interior Design & Fit Out UAE" },
       { property: "og:title", content: "Winteriors Decor | Interior Design & Fit Out UAE" },
-      { name: "twitter:title", content: "Winteriors Decor | Interior Design & Fit Out UAE" },
-      { name: "description", content: "17+ years of excellence in commercial interior design and fit-out solutions across Dubai & Abu Dhabi" },
       { property: "og:description", content: "17+ years of excellence in commercial interior design and fit-out solutions across Dubai & Abu Dhabi" },
+      { name: "twitter:title", content: "Winteriors Decor | Interior Design & Fit Out UAE" },
       { name: "twitter:description", content: "17+ years of excellence in commercial interior design and fit-out solutions across Dubai & Abu Dhabi" },
       { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UVe5Gan4vvftMqlM6fJIDIM6Z8J2/social-images/social-1782108202730-winteiors-decor-og.webp" },
       { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/UVe5Gan4vvftMqlM6fJIDIM6Z8J2/social-images/social-1782108202730-winteiors-decor-og.webp" },
       { name: "twitter:card", content: "summary_large_image" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "Winteriors Decor LLC",
+          url: "https://winteriors-decor-updated.lovable.app",
+          logo: "https://winteriors-decor-updated.lovable.app/favicon.png",
+          description: "Premium commercial interior design and fit-out company delivering turnkey workspace solutions across Dubai and Abu Dhabi for 17+ years.",
+          telephone: "+971 2 6432711",
+          areaServed: "AE",
+          sameAs: [
+            "https://facebook.com/winteriorsdecor",
+            "https://instagram.com/winteriorsdecor",
+            "https://linkedin.com/company/winteriorsdecor",
+          ],
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "Winteriors Decor LLC",
+          url: "https://winteriors-decor-updated.lovable.app",
+        }),
+      },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
