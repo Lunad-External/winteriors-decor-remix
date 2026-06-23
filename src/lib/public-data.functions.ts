@@ -11,7 +11,9 @@ const confidentialRenames: Record<string, string> = {
 
 const REPLACED_IMAGE_VERSION: Record<string, string> = {
   "confidential-project-01-1/13.jpg": "202606221810",
+  "confidential-project-01-1/14.jpg": "202606230036",
   "confidential-project-01-1/15.jpg": "202606221810",
+  "confidential-project-01-1/16.jpg": "202606230036",
   "environmental-intelligence-hub/07.jpg": "202606221810",
   "environmental-intelligence-hub/08.jpg": "202606221810",
   "environmental-intelligence-hub/09.jpg": "202606221810",
