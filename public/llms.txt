@@ -1,0 +1,20 @@
+# Winteriors Decor LLC
+
+> Premium commercial interior design and fit-out company based in the UAE, delivering turnkey workspace solutions across Dubai and Abu Dhabi for 17+ years.
+
+Winteriors Decor LLC designs and builds commercial interiors — corporate offices, boardrooms, retail, hospitality, healthcare, and education spaces — handling concept, design, project management, MEP, joinery, and handover in-house.
+
+## Pages
+
+- [Home](/): Company overview, featured projects, and capabilities.
+- [About](/about): Company history, values, leadership team, and certifications.
+- [Services](/services): Interior design, turnkey fit-outs, project management, space planning, ergonomic design, and refurbishment works.
+- [Projects](/projects): Portfolio of 600+ completed commercial interior and fit-out projects across the UAE.
+- [Clientele](/clientele): Brands and organizations Winteriors has delivered for.
+- [Blogs](/blogs): Insights on workplace design, sustainability, and interior design trends.
+- [Contact](/contact): Office locations, phone, and email.
+- [Enquiry](/enquiry): Submit a project enquiry.
+
+## Optional
+
+- [Privacy](/unsubscribe): Email unsubscribe handling.

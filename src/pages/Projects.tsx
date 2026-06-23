@@ -100,6 +100,7 @@ const ProjectsPage = () => {
         <meta name="description" content="Explore our portfolio of 600+ completed interior design and fit-out projects across Dubai and Abu Dhabi." />
       </Helmet>
 
+      <h1 className="sr-only">Commercial Interior Design & Fit-Out Portfolio — Dubai & Abu Dhabi</h1>
       <section className="pt-20 md:pt-24 pb-0 bg-foreground">
         <div className="max-w-5xl mx-auto px-6 py-4">
           <div className="flex flex-wrap gap-x-1 gap-y-1 justify-center">
