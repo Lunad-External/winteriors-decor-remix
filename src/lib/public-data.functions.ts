@@ -93,44 +93,32 @@ export const getSiteContentFn = createServerFn({ method: "GET" }).handler(
 
 export const getStorageProjectsFn = createServerFn({ method: "GET" }).handler(
   async (): Promise<StorageProjectDTO[]> => {
-    try {
-      const supabase = getServerSupabase();
-      const { data, error } = await supabase
-        .from("projects")
-        .select(
-          "slug, title, category, drive_folder_id, cover_path, image_count, status, deleted_at",
-        );
-      try { (await import("fs")).writeFileSync("/tmp/spf.log", JSON.stringify({ count: data?.length, error, url: process.env.SUPABASE_URL?.slice(0,40), keyLen: process.env.SUPABASE_PUBLISHABLE_KEY?.length, viteUrl: process.env.VITE_SUPABASE_URL?.slice(0,40), sample: data?.[0] }, null, 2)); } catch {}
-      console.error("[getStorageProjectsFn]", { count: data?.length, error });
-
-      if (error) {
-
-        console.error("getStorageProjectsFn supabase error:", error);
-        return [];
-      }
-      if (!data) return [];
-      return data
-        .filter(
-          (p: any) =>
-            p.image_count > 0 &&
-            p.cover_path &&
-            p.status !== "draft" &&
-            !p.deleted_at,
-        )
-        .map((p: any) => ({
-          id: p.slug,
-          title: renameIfConfidential(p.title),
-          category: normalizeCategory(p.category),
-          folder: p.drive_folder_id || p.slug,
-          coverImage: p.cover_path ? getStorageUrl(p.cover_path) : "",
-          imageCount: p.image_count || 0,
-        }));
-    } catch (e) {
-      console.error("getStorageProjectsFn threw:", e);
-      return [];
-    }
+    const supabase = getServerSupabase();
+    const { data, error } = await supabase
+      .from("projects")
+      .select(
+        "slug, title, category, drive_folder_id, cover_path, image_count, status, deleted_at",
+      );
+    if (error || !data) return [];
+    return data
+      .filter(
+        (p: any) =>
+          p.image_count > 0 &&
+          p.cover_path &&
+          p.status !== "draft" &&
+          !p.deleted_at,
+      )
+      .map((p: any) => ({
+        id: p.slug,
+        title: renameIfConfidential(p.title),
+        category: normalizeCategory(p.category),
+        folder: p.drive_folder_id || p.slug,
+        coverImage: p.cover_path ? getStorageUrl(p.cover_path) : "",
+        imageCount: p.image_count || 0,
+      }));
   },
 );
+
 
 
 export const getProjectImagesFn = createServerFn({ method: "GET" })
