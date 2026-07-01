@@ -3,13 +3,29 @@ import { siteContentQuery } from "@/lib/public-data.queries";
 
 type ContentMap = Record<string, string>;
 
+import { useState, useEffect } from "react";
+
 export function useSiteContent() {
   const { data, isLoading } = useQuery(siteContentQuery);
-  const content: ContentMap = data || {};
-  const get = (key: string, fallback = ""): string => content[key] || fallback;
-  const getNum = (key: string, fallback = 0): number =>
-    parseInt(content[key]) || fallback;
-  return { content, get, getNum, loading: isLoading };
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const content: ContentMap = (mounted && data) ? data : {};
+  
+  const get = (key: string, fallback = ""): string => {
+    if (!mounted) return fallback;
+    return content[key] || fallback;
+  };
+
+  const getNum = (key: string, fallback = 0): number => {
+    if (!mounted) return fallback;
+    return parseInt(content[key]) || fallback;
+  };
+
+  return { content, get, getNum, loading: isLoading || !mounted };
 }
 
 export function useInvalidateSiteContent() {
