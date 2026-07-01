@@ -13,29 +13,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to VPS via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy on VPS
+        run: |
+          ssh -i ~/.ssh/id_rsa ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
             set -e
 
-            echo "➡️ Going to project folder"
             cd /var/www/myapp
 
-            echo "➡️ Pulling latest code"
+            echo "Pulling latest code..."
             git reset --hard
             git pull origin main
 
-            echo "➡️ Installing dependencies"
+            echo "Installing dependencies..."
             npm install
 
-            echo "➡️ Building project"
+            echo "Building project..."
             npm run build
 
-            echo "➡️ Restarting PM2"
-            pm2 restart all || pm2 start npm --name "myapp" -- start
+            echo "Restarting PM2 app..."
+            pm2 restart winteriors-ssr
 
-            echo "✅ Deployment successful"
+            echo "Deployment completed successfully"
+          EOF
