@@ -88,7 +88,7 @@ const ContactPage = () => {
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-secondary p-8 md:p-12 lg:p-16">
               <EditableText contentKey="contact_form_heading" fallback="Send Us a Message" value={get("contact_form_heading")} as="h2" className="text-2xl md:text-3xl font-bold mb-2 font-poppins" page="contact" label="Form Heading" />
               <EditableText contentKey="contact_form_subtitle" fallback="Fill out the form below and we'll get back to you shortly." value={get("contact_form_subtitle")} as="p" className="text-muted-foreground mb-8" page="contact" label="Form Subtitle" />
-              <form className="space-y-6" onSubmit={handleSubmit}>
+              <form className="space-y-6" onSubmit={handleSubmit} action="javascript:void(0);">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <Input placeholder="Your Name*" className="bg-card border-border" required value={form.name} onChange={(e) => updateField("name", e.target.value)} />
                   <Input type="email" placeholder="Email Address*" className="bg-card border-border" required value={form.email} onChange={(e) => updateField("email", e.target.value)} />
