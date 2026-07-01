@@ -43,7 +43,7 @@ jobs:
             npm run build
 
             echo "Restarting PM2..."
-            pm2 restart winteriors-ssr || pm2 start .output/server/index.mjs --name winteriors-ssr
+            pm2 restart winteriors-ssr || pm2 start .output/server/index.mjs --name winteriors-ssr --node-args="--env-file=.env"
 
             pm2 save
 
