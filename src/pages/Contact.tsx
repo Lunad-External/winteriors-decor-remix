@@ -1,9 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { PageHero } from "@/components/common/PageHero";
 import { EditableText } from "@/components/common/EditableText";
 import { motion } from "framer-motion";
-import { Helmet } from "react-helmet-async";
 import { Phone, Mail, MapPin, Clock, Smartphone, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +17,11 @@ const ContactPage = () => {
   const { get } = useSiteContent();
   const { toast } = useToast();
   const [submitting, setSubmitting] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const [form, setForm] = useState({
     name: "",
@@ -62,11 +66,6 @@ const ContactPage = () => {
 
   return (
     <Layout>
-      <Helmet>
-        <title>Contact Us | Winteriors Decor LLC - Dubai & Abu Dhabi</title>
-        <meta name="description" content="Get in touch with Winteriors Decor LLC. Visit our offices in Dubai Media City and Abu Dhabi." />
-      </Helmet>
- 
       <PageHero
         title={get("contact_hero_title", "We're Here To Help")}
         subtitle={get("contact_hero_subtitle", "Get in touch with our team to discuss your next project.")}
@@ -119,13 +118,15 @@ const ContactPage = () => {
             {offices.map((office, index) => (
               <motion.div key={office.city} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.1 }} className="bg-card border border-border overflow-hidden">
                 <div className="h-[250px] w-full">
-                  <iframe
-                    src={office.city === "Abu Dhabi"
-                      ? "https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Ahmed+Abdulla+Alhameli+Bldg,+Salam+Street,+Abu+Dhabi,+UAE&zoom=16"
-                      : "https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Concord+Tower,+Dubai+Media+City,+Dubai,+UAE&zoom=16"
-                    }
-                    width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={`${office.city} Office Location`}
-                  />
+                  {mounted && (
+                    <iframe
+                      src={office.city === "Abu Dhabi"
+                        ? "https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Ahmed+Abdulla+Alhameli+Bldg,+Salam+Street,+Abu+Dhabi,+UAE&zoom=16"
+                        : "https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=Concord+Tower,+Dubai+Media+City,+Dubai,+UAE&zoom=16"
+                      }
+                      width="100%" height="100%" style={{ border: 0 }} allowFullScreen loading="lazy" referrerPolicy="no-referrer-when-downgrade" title={`${office.city} Office Location`}
+                    />
+                  )}
                 </div>
                 <div className="p-6 md:p-8">
                   <h3 className="text-xl font-bold text-foreground mb-6 font-poppins">{office.city} Office</h3>
