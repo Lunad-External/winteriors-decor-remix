@@ -3,39 +3,42 @@ import { siteContentQuery } from "@/lib/public-data.queries";
 
 type ContentMap = Record<string, string>;
 
-import { useState, useEffect } from "react";
-
 export function useSiteContent() {
-  const { data, isLoading } = useQuery(siteContentQuery);
-  const [mounted, setMounted] = useState(false);
+  const { data, isLoading, isError } = useQuery(siteContentQuery);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  // Always keep SSR + client output identical
+  const content: ContentMap = data ?? {};
 
-  const content: ContentMap = (mounted && data) ? data : {};
-  
   const get = (key: string, fallback = ""): string => {
-    if (!mounted) return fallback;
-    return content[key] || fallback;
+    const value = content[key];
+    return value !== undefined && value !== null ? value : fallback;
   };
 
   const getNum = (key: string, fallback = 0): number => {
-    if (!mounted) return fallback;
-    return parseInt(content[key]) || fallback;
+    const value = content[key];
+    const parsed = Number(value);
+    return isNaN(parsed) ? fallback : parsed;
   };
 
-  return { content, get, getNum, loading: isLoading || !mounted };
+  return {
+    content,
+    get,
+    getNum,
+    loading: isLoading,
+    error: isError,
+  };
 }
 
 export function useInvalidateSiteContent() {
   const qc = useQueryClient();
-  return () => qc.invalidateQueries({ queryKey: siteContentQuery.queryKey });
+
+  return () =>
+    qc.invalidateQueries({
+      queryKey: siteContentQuery.queryKey,
+    });
 }
 
-// Back-compat: legacy callers used a module-level invalidator. Kept as no-op
-// since cache is now owned by React Query (use useInvalidateSiteContent in
-// components instead).
+// Backward compatibility (kept safe no-op)
 export function invalidateSiteContent() {
-  // no-op; see useInvalidateSiteContent
+  // intentionally empty (React Query handles caching)
 }
