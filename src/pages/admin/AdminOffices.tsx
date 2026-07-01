@@ -7,7 +7,7 @@ export default function AdminOffices() {
       <SimpleCrud
         table="offices"
         title="Office Locations"
-        description="Contact details shown across the site and on /contact."
+        description="Contact details shown across the site and on /contactus."
         titleField="city"
         columns={[
           { key: "city", label: "City" },

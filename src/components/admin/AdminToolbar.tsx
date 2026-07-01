@@ -13,7 +13,7 @@ const pages = [
   { name: "Services", path: "/services" },
   { name: "Projects", path: "/projects" },
   { name: "Clientele", path: "/clientele" },
-  { name: "Contact", path: "/contact" },
+  { name: "Contact", path: "/contactus" },
   { name: "Enquiry", path: "/enquiry" },
 ];
 

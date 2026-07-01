@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import Contact from "@/pages/Contact";
+import ContactUs from "@/pages/ContactUs";
 import { siteContentQuery } from "@/lib/public-data.queries";
 
-export const Route = createFileRoute("/contact")({
+export const Route = createFileRoute("/contactus")({
   loader: ({ context }) =>
     context.queryClient.ensureQueryData(siteContentQuery).catch(() => ({})),
   head: () => ({
@@ -19,9 +19,9 @@ export const Route = createFileRoute("/contact")({
         content:
           "Talk to our team about your next commercial interior design or fit-out project in the UAE.",
       },
-      { property: "og:url", content: "/contact" },
+      { property: "og:url", content: "/contactus" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "/contactus" }],
   }),
-  component: Contact,
+  component: ContactUs,
 });

@@ -20,7 +20,7 @@ const navLinks = [
   { name: "Services", path: "/services", hasDropdown: true },
   { name: "Projects", path: "/projects" },
   { name: "Clientele", path: "/clientele" },
-  { name: "Contact", path: "/contact" },
+  { name: "Contact", path: "/contactus" },
 ];
 
 export const Header = () => {
@@ -59,7 +59,7 @@ export const Header = () => {
     navigate(`/services/${serviceId}`);
   };
 
-  const pagesWithHero = ["/", "/about", "/services", "/clientele", "/contact", "/blogs", "/enquiry"];
+  const pagesWithHero = ["/", "/about", "/services", "/clientele", "/contactus", "/blogs", "/enquiry"];
   const isProjectDetail = location.pathname.startsWith("/projects/");
   const isServicePage = location.pathname.startsWith("/services/");
   const hasHeroBehindHeader = pagesWithHero.includes(location.pathname) || isProjectDetail || isServicePage;

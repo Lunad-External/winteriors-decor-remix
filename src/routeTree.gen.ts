@@ -14,7 +14,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as EnquiryRouteImport } from './routes/enquiry'
-import { Route as ContactRouteImport } from './routes/contact'
+import { Route as ContactusRouteImport } from './routes/contactus'
 import { Route as ClienteleRouteImport } from './routes/clientele'
 import { Route as BlogsRouteImport } from './routes/blogs'
 import { Route as AboutRouteImport } from './routes/about'
@@ -69,9 +69,9 @@ const EnquiryRoute = EnquiryRouteImport.update({
   path: '/enquiry',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const ContactusRoute = ContactusRouteImport.update({
+  id: '/contactus',
+  path: '/contactus',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClienteleRoute = ClienteleRouteImport.update({
@@ -222,7 +222,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/blogs': typeof BlogsRouteWithChildren
   '/clientele': typeof ClienteleRoute
-  '/contact': typeof ContactRoute
+  '/contactus': typeof ContactusRoute
   '/enquiry': typeof EnquiryRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
@@ -258,7 +258,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/blogs': typeof BlogsRouteWithChildren
   '/clientele': typeof ClienteleRoute
-  '/contact': typeof ContactRoute
+  '/contactus': typeof ContactusRoute
   '/enquiry': typeof EnquiryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/unsubscribe': typeof UnsubscribeRoute
@@ -293,7 +293,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/blogs': typeof BlogsRouteWithChildren
   '/clientele': typeof ClienteleRoute
-  '/contact': typeof ContactRoute
+  '/contactus': typeof ContactusRoute
   '/enquiry': typeof EnquiryRoute
   '/projects': typeof ProjectsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
@@ -331,7 +331,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blogs'
     | '/clientele'
-    | '/contact'
+    | '/contactus'
     | '/enquiry'
     | '/projects'
     | '/services'
@@ -367,7 +367,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blogs'
     | '/clientele'
-    | '/contact'
+    | '/contactus'
     | '/enquiry'
     | '/sitemap.xml'
     | '/unsubscribe'
@@ -401,7 +401,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blogs'
     | '/clientele'
-    | '/contact'
+    | '/contactus'
     | '/enquiry'
     | '/projects'
     | '/services'
@@ -438,7 +438,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BlogsRoute: typeof BlogsRouteWithChildren
   ClienteleRoute: typeof ClienteleRoute
-  ContactRoute: typeof ContactRoute
+  ContactusRoute: typeof ContactusRoute
   EnquiryRoute: typeof EnquiryRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
   ServicesRoute: typeof ServicesRouteWithChildren
@@ -499,11 +499,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof EnquiryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
+    '/contactus': {
+      id: '/contactus'
+      path: '/contactus'
+      fullPath: '/contactus'
+      preLoaderRoute: typeof ContactusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/clientele': {
@@ -773,7 +773,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BlogsRoute: BlogsRouteWithChildren,
   ClienteleRoute: ClienteleRoute,
-  ContactRoute: ContactRoute,
+  ContactusRoute: ContactusRoute,
   EnquiryRoute: EnquiryRoute,
   ProjectsRoute: ProjectsRouteWithChildren,
   ServicesRoute: ServicesRouteWithChildren,

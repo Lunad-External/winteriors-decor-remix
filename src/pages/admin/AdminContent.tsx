@@ -7,7 +7,7 @@ const pages = [
   { name: "Homepage", path: "/", description: "Hero, about, stats, expertise, projects, testimonials" },
   { name: "About", path: "/about", description: "Vision, mission, team, certifications" },
   { name: "Services", path: "/services", description: "All 6 service categories" },
-  { name: "Contact", path: "/contact", description: "Contact form, CTA, office details" },
+  { name: "Contact", path: "/contactus", description: "Contact form, CTA, office details" },
   { name: "Projects", path: "/projects", description: "Project listings & gallery" },
   { name: "Clientele", path: "/clientele", description: "Client logos & partnerships" },
 ];

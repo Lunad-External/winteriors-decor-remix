@@ -15,7 +15,7 @@ const footerLinks = {
     { name: "Projects", path: "/projects" },
     { name: "Clientele", path: "/clientele" },
     { name: "Blogs", path: "/blogs" },
-    { name: "Contact Us", path: "/contact" },
+    { name: "Contact Us", path: "/contactus" },
   ],
 };
 

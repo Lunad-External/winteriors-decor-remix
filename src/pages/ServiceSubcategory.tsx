@@ -332,7 +332,7 @@ const ServiceSubcategoryPage = () => {
                 Common questions about our {subcategory.name.toLowerCase()} services. Can't find your answer? Get in touch.
               </p>
               <Button asChild variant="outline" className="mt-6 text-sm">
-                <Link to="/contact" target="_blank" rel="noopener noreferrer">Contact Us</Link>
+                <Link to="/contactus" target="_blank" rel="noopener noreferrer">Contact Us</Link>
               </Button>
             </div>
             <div className="flex flex-col">
