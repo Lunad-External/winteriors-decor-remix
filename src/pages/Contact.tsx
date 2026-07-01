@@ -41,12 +41,14 @@ const ContactPage = () => {
 
     try {
       await submitFormFn({
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        company: form.company || undefined,
-        message: form.message,
-        type: "Contact",
+        data: {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          company: form.company || undefined,
+          message: form.message,
+          type: "Contact",
+        }
       });
 
       toast({ title: "Message sent!", description: "We'll get back to you within one business day." });

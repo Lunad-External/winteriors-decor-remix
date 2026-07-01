@@ -75,13 +75,15 @@ const EnquiryPage = () => {
       );
 
       await submitFormFn({
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        company: form.company || undefined,
-        message: form.message,
-        type: "Enquiry",
-        attachments: formattedAttachments,
+        data: {
+          name: form.name,
+          email: form.email,
+          phone: form.phone,
+          company: form.company || undefined,
+          message: form.message,
+          type: "Enquiry",
+          attachments: formattedAttachments,
+        }
       });
 
       setSubmitted(true);
