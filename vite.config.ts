@@ -21,7 +21,9 @@ import path from "path";
 }
 
 export default defineConfig({
-  nitro: true,
+  nitro: {
+    preset: "node-server",
+  },
   vite: {
     server: {
       host: "::",
