@@ -104,7 +104,10 @@ export function SimpleCrud({
   });
 
   const handleNew = () => {
-    setEditing({ ...defaults, display_order: rows.length, is_active: true });
+    const booleanDefaults = Object.fromEntries(
+      fields.filter((f) => f.type === "boolean").map((f) => [f.name, true])
+    );
+    setEditing({ ...defaults, ...booleanDefaults, display_order: rows.length });
     setOpen(true);
   };
 
