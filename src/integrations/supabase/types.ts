@@ -24,7 +24,9 @@ export type Database = {
           id: string
           image_url: string | null
           is_published: boolean
+          keywords: string[]
           published_date: string | null
+          slider_images: string[]
           slug: string
           title: string
           updated_at: string
@@ -38,7 +40,9 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_published?: boolean
+          keywords?: string[]
           published_date?: string | null
+          slider_images?: string[]
           slug: string
           title: string
           updated_at?: string
@@ -52,7 +56,9 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_published?: boolean
+          keywords?: string[]
           published_date?: string | null
+          slider_images?: string[]
           slug?: string
           title?: string
           updated_at?: string

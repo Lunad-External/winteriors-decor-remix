@@ -55,7 +55,6 @@ export const PageHero = ({ title, subtitle, backgroundImage, compact, children }
             alt={title}
             className="w-full h-full object-cover object-center"
             loading="eager"
-            fetchPriority="high"
             decoding="async"
             style={{ transform: 'translate3d(0, 0, 0)', backfaceVisibility: 'hidden' }}
           />

@@ -1,44 +1,25 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { siteContentQuery } from "@/lib/public-data.queries";
 
 type ContentMap = Record<string, string>;
 
 export function useSiteContent() {
-  const { data, isLoading, isError } = useQuery(siteContentQuery);
-
-  // Always keep SSR + client output identical
-  const content: ContentMap = data ?? {};
-
-  const get = (key: string, fallback = ""): string => {
-    const value = content[key];
-    return value !== undefined && value !== null ? value : fallback;
-  };
-
-  const getNum = (key: string, fallback = 0): number => {
-    const value = content[key];
-    const parsed = Number(value);
-    return isNaN(parsed) ? fallback : parsed;
-  };
-
-  return {
-    content,
-    get,
-    getNum,
-    loading: isLoading,
-    error: isError,
-  };
+  const { data } = useSuspenseQuery(siteContentQuery);
+  const content: ContentMap = data || {};
+  const get = (key: string, fallback = ""): string => content[key] || fallback;
+  const getNum = (key: string, fallback = 0): number =>
+    parseInt(content[key]) || fallback;
+  return { content, get, getNum, loading: false };
 }
 
 export function useInvalidateSiteContent() {
   const qc = useQueryClient();
-
-  return () =>
-    qc.invalidateQueries({
-      queryKey: siteContentQuery.queryKey,
-    });
+  return () => qc.invalidateQueries({ queryKey: siteContentQuery.queryKey });
 }
 
-// Backward compatibility (kept safe no-op)
+// Back-compat: legacy callers used a module-level invalidator. Kept as no-op
+// since cache is now owned by React Query (use useInvalidateSiteContent in
+// components instead).
 export function invalidateSiteContent() {
-  // intentionally empty (React Query handles caching)
+  // no-op; see useInvalidateSiteContent
 }

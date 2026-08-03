@@ -15,6 +15,7 @@ import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as EnquiryRouteImport } from './routes/enquiry'
 import { Route as ContactusRouteImport } from './routes/contactus'
+import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ClienteleRouteImport } from './routes/clientele'
 import { Route as BlogsRouteImport } from './routes/blogs'
 import { Route as AboutRouteImport } from './routes/about'
@@ -22,6 +23,7 @@ import { Route as SplatRouteImport } from './routes/$'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
+import { Route as BlogsIndexRouteImport } from './routes/blogs.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as ServicesCategorySlugRouteImport } from './routes/services.$categorySlug'
 import { Route as ProjectsIdRouteImport } from './routes/projects.$id'
@@ -74,6 +76,11 @@ const ContactusRoute = ContactusRouteImport.update({
   path: '/contactus',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClienteleRoute = ClienteleRouteImport.update({
   id: '/clientele',
   path: '/clientele',
@@ -108,6 +115,11 @@ const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => ProjectsRoute,
+} as any)
+const BlogsIndexRoute = BlogsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogsRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
@@ -222,6 +234,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/blogs': typeof BlogsRouteWithChildren
   '/clientele': typeof ClienteleRoute
+  '/contact': typeof ContactRoute
   '/contactus': typeof ContactusRoute
   '/enquiry': typeof EnquiryRoute
   '/projects': typeof ProjectsRouteWithChildren
@@ -247,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/projects/$id': typeof ProjectsIdRoute
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/blogs/': typeof BlogsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
@@ -256,8 +270,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
   '/about': typeof AboutRoute
-  '/blogs': typeof BlogsRouteWithChildren
   '/clientele': typeof ClienteleRoute
+  '/contact': typeof ContactRoute
   '/contactus': typeof ContactusRoute
   '/enquiry': typeof EnquiryRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -281,6 +295,7 @@ export interface FileRoutesByTo {
   '/projects/$id': typeof ProjectsIdRoute
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin': typeof AdminIndexRoute
+  '/blogs': typeof BlogsIndexRoute
   '/projects': typeof ProjectsIndexRoute
   '/services': typeof ServicesIndexRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
@@ -293,6 +308,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/blogs': typeof BlogsRouteWithChildren
   '/clientele': typeof ClienteleRoute
+  '/contact': typeof ContactRoute
   '/contactus': typeof ContactusRoute
   '/enquiry': typeof EnquiryRoute
   '/projects': typeof ProjectsRouteWithChildren
@@ -318,6 +334,7 @@ export interface FileRoutesById {
   '/projects/$id': typeof ProjectsIdRoute
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
+  '/blogs/': typeof BlogsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/admin/projects/$id': typeof AdminProjectsIdRoute
@@ -331,6 +348,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blogs'
     | '/clientele'
+    | '/contact'
     | '/contactus'
     | '/enquiry'
     | '/projects'
@@ -356,6 +374,7 @@ export interface FileRouteTypes {
     | '/projects/$id'
     | '/services/$categorySlug'
     | '/admin/'
+    | '/blogs/'
     | '/projects/'
     | '/services/'
     | '/admin/projects/$id'
@@ -365,8 +384,8 @@ export interface FileRouteTypes {
     | '/'
     | '/$'
     | '/about'
-    | '/blogs'
     | '/clientele'
+    | '/contact'
     | '/contactus'
     | '/enquiry'
     | '/sitemap.xml'
@@ -390,6 +409,7 @@ export interface FileRouteTypes {
     | '/projects/$id'
     | '/services/$categorySlug'
     | '/admin'
+    | '/blogs'
     | '/projects'
     | '/services'
     | '/admin/projects/$id'
@@ -401,6 +421,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/blogs'
     | '/clientele'
+    | '/contact'
     | '/contactus'
     | '/enquiry'
     | '/projects'
@@ -426,6 +447,7 @@ export interface FileRouteTypes {
     | '/projects/$id'
     | '/services/$categorySlug'
     | '/admin/'
+    | '/blogs/'
     | '/projects/'
     | '/services/'
     | '/admin/projects/$id'
@@ -438,6 +460,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   BlogsRoute: typeof BlogsRouteWithChildren
   ClienteleRoute: typeof ClienteleRoute
+  ContactRoute: typeof ContactRoute
   ContactusRoute: typeof ContactusRoute
   EnquiryRoute: typeof EnquiryRoute
   ProjectsRoute: typeof ProjectsRouteWithChildren
@@ -506,6 +529,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactusRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/clientele': {
       id: '/clientele'
       path: '/clientele'
@@ -554,6 +584,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/projects/'
       preLoaderRoute: typeof ProjectsIndexRouteImport
       parentRoute: typeof ProjectsRoute
+    }
+    '/blogs/': {
+      id: '/blogs/'
+      path: '/'
+      fullPath: '/blogs/'
+      preLoaderRoute: typeof BlogsIndexRouteImport
+      parentRoute: typeof BlogsRoute
     }
     '/admin/': {
       id: '/admin/'
@@ -707,10 +744,12 @@ declare module '@tanstack/react-router' {
 
 interface BlogsRouteChildren {
   BlogsSlugRoute: typeof BlogsSlugRoute
+  BlogsIndexRoute: typeof BlogsIndexRoute
 }
 
 const BlogsRouteChildren: BlogsRouteChildren = {
   BlogsSlugRoute: BlogsSlugRoute,
+  BlogsIndexRoute: BlogsIndexRoute,
 }
 
 const BlogsRouteWithChildren = BlogsRoute._addFileChildren(BlogsRouteChildren)
@@ -773,6 +812,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   BlogsRoute: BlogsRouteWithChildren,
   ClienteleRoute: ClienteleRoute,
+  ContactRoute: ContactRoute,
   ContactusRoute: ContactusRoute,
   EnquiryRoute: EnquiryRoute,
   ProjectsRoute: ProjectsRouteWithChildren,

@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2, Loader2 } from "lucide-react";
 
-export type FieldType = "text" | "textarea" | "richtext" | "number" | "boolean" | "image" | "select";
+export type FieldType = "text" | "textarea" | "richtext" | "number" | "boolean" | "image" | "images" | "tags" | "select";
 
 export interface FieldDef {
   name: string;
@@ -208,6 +208,61 @@ export function SimpleCrud({
                         <option key={o.value} value={o.value}>{o.label}</option>
                       ))}
                     </select>
+                  ) : f.type === "tags" ? (
+                    <Input
+                      type="text"
+                      value={Array.isArray(editing[f.name]) ? editing[f.name].join(", ") : (editing[f.name] ?? "")}
+                      onChange={(e) => {
+                        const arr = e.target.value
+                          .split(",")
+                          .map((s) => s.trim())
+                          .filter(Boolean);
+                        setEditing({ ...editing, [f.name]: arr });
+                      }}
+                      placeholder={f.placeholder || "Comma separated"}
+                    />
+                  ) : f.type === "images" ? (
+                    <div className="space-y-2">
+                      {(editing[f.name] || []).map((url: string, idx: number) => (
+                        <div key={idx} className="flex items-center gap-2">
+                          <img src={url} alt="" className="h-12 w-16 object-cover rounded border" />
+                          <Input
+                            type="text"
+                            value={url}
+                            onChange={(e) => {
+                              const arr = [...(editing[f.name] || [])];
+                              arr[idx] = e.target.value;
+                              setEditing({ ...editing, [f.name]: arr });
+                            }}
+                          />
+                          <Button
+                            type="button"
+                            size="icon"
+                            variant="ghost"
+                            onClick={() => {
+                              const arr = [...(editing[f.name] || [])];
+                              arr.splice(idx, 1);
+                              setEditing({ ...editing, [f.name]: arr });
+                            }}
+                          >
+                            <Trash2 className="w-4 h-4 text-destructive" />
+                          </Button>
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          setEditing({
+                            ...editing,
+                            [f.name]: [...(editing[f.name] || []), ""],
+                          })
+                        }
+                      >
+                        <Plus className="w-3.5 h-3.5 mr-1" /> Add image URL
+                      </Button>
+                    </div>
                   ) : (
                     <Input
                       type="text"

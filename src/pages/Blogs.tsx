@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { Layout } from "@/components/layout/Layout";
 import { PageHero } from "@/components/common/PageHero";
 import { motion } from "framer-motion";
 import { Helmet } from "react-helmet-async";
-import { blogs } from "@/data/blogs";
+import { blogs as staticBlogs, resolveBlogImageUrl } from "@/data/blogs";
+import { useDbBlogs } from "@/hooks/useDbBlogs";
 import {
   Pagination,
   PaginationContent,
@@ -20,6 +21,22 @@ const BLOGS_PER_PAGE = 9;
 
 const BlogsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const { blogs: dbBlogs } = useDbBlogs();
+
+  const blogs = useMemo(() => {
+    const dbSlugs = new Set(dbBlogs.map((b) => b.slug));
+    const mapped = dbBlogs.map((b) => ({
+      id: b.slug,
+      title: b.title,
+      slug: b.slug,
+      excerpt: b.excerpt || "",
+      image: resolveBlogImageUrl((b.slider_images && b.slider_images[0]) || b.image_url),
+      date: b.published_date || "",
+    }));
+    const rest = staticBlogs.filter((s) => !dbSlugs.has(s.slug));
+    return [...mapped, ...rest];
+  }, [dbBlogs]);
+
   const totalPages = Math.ceil(blogs.length / BLOGS_PER_PAGE);
   const startIdx = (currentPage - 1) * BLOGS_PER_PAGE;
   const currentBlogs = blogs.slice(startIdx, startIdx + BLOGS_PER_PAGE);
@@ -72,7 +89,7 @@ const BlogsPage = () => {
                 viewport={{ once: true }}
                 className="group"
               >
-                <Link to={`/blogs/${blog.slug}`} className="block">
+                <Link to="/blogs/$slug" params={{ slug: blog.slug }} className="block">
                   <div className="aspect-video rounded-2xl overflow-hidden mb-4">
                     <img
                       src={blog.image}
@@ -88,7 +105,8 @@ const BlogsPage = () => {
                 </h3>
                 <p className="text-muted-foreground mb-4 line-clamp-3">{blog.excerpt}</p>
                 <Link
-                  to={`/blogs/${blog.slug}`}
+                  to="/blogs/$slug"
+                  params={{ slug: blog.slug }}
                   className="text-primary font-medium hover:underline"
                 >
                   Read More →

@@ -13,7 +13,6 @@ import { siteContentQuery } from "@/lib/public-data.queries";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ClientToasters } from "@/components/common/ClientToasters";
-import { LoadingScreen } from "@/components/common/LoadingScreen";
 import { PageTransition } from "@/components/common/PageTransition";
 import { ConversationSummaryProvider } from "@/hooks/useConversationSummary";
 import { WhatsAppFloat } from "@/components/chat/WhatsAppFloat";
@@ -168,7 +167,6 @@ function RootComponent() {
             <ConversationSummaryProvider>
               <TooltipProvider>
                 <ClientOnly fallback={null}>
-                  <LoadingScreen />
                   <ClientToasters />
                 </ClientOnly>
                 <AppShell />

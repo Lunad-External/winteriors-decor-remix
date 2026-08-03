@@ -8,21 +8,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, CheckCircle, Loader2 } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { submitFormFn } from "@/lib/email.functions";
 import heroEnquiry from "@/assets/hero-enquiry.jpg";
-
-const fileToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      const base64String = (reader.result as string).split(",")[1];
-      resolve(base64String);
-    };
-    reader.onerror = (error) => reject(error);
-  });
-};
 
 const EnquiryPage = () => {
   const { get } = useSiteContent();
@@ -62,29 +50,40 @@ const EnquiryPage = () => {
     setSubmitting(true);
 
     try {
-      // Convert attachments to base64 format for SMTP2GO API
-      const formattedAttachments = await Promise.all(
-        attachments.map(async (file) => {
-          const fileblob = await fileToBase64(file);
-          return {
-            filename: file.name,
-            fileblob,
-            mimetype: file.type,
-          };
-        })
-      );
+      const enquiryId = crypto.randomUUID();
+      const submittedAt = new Date().toISOString();
 
-      await submitFormFn({
-        data: {
-          name: form.name,
-          email: form.email,
-          phone: form.phone,
-          company: form.company || undefined,
-          message: form.message,
-          type: "Enquiry",
-          attachments: formattedAttachments,
-        }
-      });
+      const { error } = await supabase.from("enquiries").insert({
+        id: enquiryId,
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        company: form.company.trim() || null,
+        message: form.message.trim(),
+      } as any);
+
+      if (error) throw error;
+
+      // Fire notification email — non-blocking, never breaks the form
+      try {
+        await supabase.functions.invoke("send-transactional-email", {
+          body: {
+            templateName: "enquiry-notification",
+            recipientEmail: "info@winteriorsdecor.com",
+            idempotencyKey: `enquiry-notify-${enquiryId}`,
+            templateData: {
+              name: form.name.trim(),
+              email: form.email.trim(),
+              phone: form.phone.trim(),
+              company: form.company.trim() || undefined,
+              message: form.message.trim(),
+              submittedAt,
+            },
+          },
+        });
+      } catch (emailErr) {
+        console.error("Notification email failed (enquiry was saved):", emailErr);
+      }
 
       setSubmitted(true);
       toast({ title: "Enquiry sent!", description: "We'll get back to you within one business day." });
