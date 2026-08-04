@@ -19,33 +19,45 @@ import blog18 from "@/assets/blog/blog-18.jpg";
 import blog19 from "@/assets/blog/blog-19.jpg";
 import blog20 from "@/assets/blog/blog-20.jpg";
 
-const LEGACY_BLOG_IMAGE_URLS: Record<string, string> = {
-  "/src/assets/blog/blog-1.jpg": blog1,
-  "/src/assets/blog/blog-2.jpg": blog2,
-  "/src/assets/blog/blog-3.jpg": blog3,
-  "/src/assets/blog/blog-4.jpg": blog4,
-  "/src/assets/blog/blog-5.jpg": blog5,
-  "/src/assets/blog/blog-6.jpg": blog6,
-  "/src/assets/blog/blog-7.jpg": blog7,
-  "/src/assets/blog/blog-8.jpg": blog8,
-  "/src/assets/blog/blog-9.jpg": blog9,
-  "/src/assets/blog/blog-10.jpg": blog10,
-  "/src/assets/blog/blog-11.jpg": blog11,
-  "/src/assets/blog/blog-12.jpg": blog12,
-  "/src/assets/blog/blog-13.jpg": blog13,
-  "/src/assets/blog/blog-14.jpg": blog14,
-  "/src/assets/blog/blog-15.jpg": blog15,
-  "/src/assets/blog/blog-16.jpg": blog16,
-  "/src/assets/blog/blog-17.jpg": blog17,
-  "/src/assets/blog/blog-18.jpg": blog18,
-  "/src/assets/blog/blog-19.jpg": blog19,
-  "/src/assets/blog/blog-20.jpg": blog20,
+const LOCAL_BLOG_IMAGES: Record<string, string> = {
+  "blog-1.jpg": blog1,
+  "blog-2.jpg": blog2,
+  "blog-3.jpg": blog3,
+  "blog-4.jpg": blog4,
+  "blog-5.jpg": blog5,
+  "blog-6.jpg": blog6,
+  "blog-7.jpg": blog7,
+  "blog-8.jpg": blog8,
+  "blog-9.jpg": blog9,
+  "blog-10.jpg": blog10,
+  "blog-11.jpg": blog11,
+  "blog-12.jpg": blog12,
+  "blog-13.jpg": blog13,
+  "blog-14.jpg": blog14,
+  "blog-15.jpg": blog15,
+  "blog-16.jpg": blog16,
+  "blog-17.jpg": blog17,
+  "blog-18.jpg": blog18,
+  "blog-19.jpg": blog19,
+  "blog-20.jpg": blog20,
 };
+
+const LEGACY_BLOG_IMAGE_URLS: Record<string, string> = Object.fromEntries(
+  Object.entries(LOCAL_BLOG_IMAGES).map(([name, url]) => [`/src/assets/blog/${name}`, url])
+);
+
+// Old Lovable-hosted asset links (/__l5e/assets-v1/<id>/blog-N.jpg) that were saved
+// directly into blog rows in the database — these 404 outside Lovable's own hosting,
+// so redirect them to the matching image we still have bundled locally.
+const LOVABLE_ASSET_PATTERN = /^\/__l5e\/assets-v1\/[^/]+\/(blog-\d+\.jpg)$/i;
 
 export function resolveBlogImageUrl(url?: string | null): string {
   if (!url) return "";
   const cleanUrl = url.trim();
-  return LEGACY_BLOG_IMAGE_URLS[cleanUrl] || cleanUrl;
+  if (LEGACY_BLOG_IMAGE_URLS[cleanUrl]) return LEGACY_BLOG_IMAGE_URLS[cleanUrl];
+  const match = cleanUrl.match(LOVABLE_ASSET_PATTERN);
+  if (match && LOCAL_BLOG_IMAGES[match[1]]) return LOCAL_BLOG_IMAGES[match[1]];
+  return cleanUrl;
 }
 
 export function resolveBlogImageUrls(urls?: string[] | null): string[] {

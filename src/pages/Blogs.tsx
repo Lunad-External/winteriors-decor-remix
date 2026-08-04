@@ -21,7 +21,7 @@ const BLOGS_PER_PAGE = 9;
 
 const BlogsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const { blogs: dbBlogs } = useDbBlogs();
+  const { blogs: dbBlogs, loading: dbLoading } = useDbBlogs();
 
   const blogs = useMemo(() => {
     const dbSlugs = new Set(dbBlogs.map((b) => b.slug));
@@ -80,7 +80,16 @@ const BlogsPage = () => {
       <section className="py-12 md:py-16 bg-background">
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {currentBlogs.map((blog, i) => (
+            {dbLoading
+              ? Array.from({ length: BLOGS_PER_PAGE }).map((_, i) => (
+                  <div key={i} className="animate-pulse">
+                    <div className="aspect-video rounded-2xl bg-muted mb-4" />
+                    <div className="h-4 w-24 bg-muted rounded mb-2" />
+                    <div className="h-5 w-3/4 bg-muted rounded mb-2" />
+                    <div className="h-4 w-full bg-muted rounded" />
+                  </div>
+                ))
+              : currentBlogs.map((blog, i) => (
               <motion.article
                 key={blog.id}
                 initial={{ opacity: 0, y: 30 }}
