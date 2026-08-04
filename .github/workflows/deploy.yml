@@ -19,7 +19,7 @@ jobs:
           node-version: 22
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build project
         run: npm run build
@@ -34,10 +34,11 @@ jobs:
             cd ~/deploy/winteriors-decor-remix || exit
 
             echo "Pulling latest code..."
+            git checkout -- package-lock.json
             git pull origin main
 
             echo "Installing dependencies..."
-            npm install
+            npm ci
 
             echo "Building SSR app..."
             npm run build
