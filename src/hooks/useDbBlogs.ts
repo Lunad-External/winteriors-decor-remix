@@ -22,7 +22,7 @@ export function useDbBlogs() {
     queryFn: async (): Promise<DbBlog[]> => {
       const { data, error } = await (supabase as any)
         .from("blogs")
-        .select("*")
+        .select("id, title, slug, excerpt, image_url, slider_images, published_date, display_order, is_published")
         .eq("is_published", true)
         .order("display_order", { ascending: false });
       if (error) throw error;
