@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Blogs from "@/pages/Blogs";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/blogs/")({
   head: () => ({
@@ -16,9 +17,9 @@ export const Route = createFileRoute("/blogs/")({
         content:
           "Insights, trends and case studies on commercial interior design and fit-out across the UAE.",
       },
-      { property: "og:url", content: "/blogs" },
+        { property: "og:url", content: absoluteUrl("/blogs") },
     ],
-    links: [{ rel: "canonical", href: "/blogs" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/blogs") }],
   }),
   component: Blogs,
 });

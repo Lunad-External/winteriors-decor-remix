@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import BlogDetail from "@/pages/BlogDetail";
 import { blogs } from "@/data/blogs";
-
-const SITE = "https://winteriors-decor-updated.lovable.app";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/blogs/$slug")({
   head: ({ params }) => {
@@ -11,8 +10,8 @@ export const Route = createFileRoute("/blogs/$slug")({
       params.slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
     const description = blog?.excerpt ??
       `${title} — insights on interior design and fit-out from Winteriors Decor LLC.`;
-    const url = `${SITE}/blogs/${params.slug}`;
-    const image = blog?.image ? `${SITE}${blog.image}` : undefined;
+    const url = absoluteUrl(`/blogs/${params.slug}`);
+    const image = blog?.image ? absoluteUrl(blog.image) : undefined;
     const isoDate = blog?.date ? new Date(blog.date).toISOString() : undefined;
 
     const meta: Array<Record<string, string>> = [
@@ -38,7 +37,7 @@ export const Route = createFileRoute("/blogs/$slug")({
       publisher: {
         "@type": "Organization",
         name: "Winteriors Decor LLC",
-        logo: { "@type": "ImageObject", url: `${SITE}/favicon.png` },
+        logo: { "@type": "ImageObject", url: absoluteUrl("/favicon.png") },
       },
     };
     if (image) jsonLd.image = image;

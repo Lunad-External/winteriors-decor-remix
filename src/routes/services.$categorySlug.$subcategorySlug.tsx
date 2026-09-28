@@ -1,8 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import ServiceSubcategory from "@/pages/ServiceSubcategory";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/services/$categorySlug/$subcategorySlug")({
   head: ({ params }) => {
+    const url = absoluteUrl(`/services/${params.categorySlug}/${params.subcategorySlug}`);
     const title = params.subcategorySlug
       .replace(/-/g, " ")
       .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -23,13 +25,13 @@ export const Route = createFileRoute("/services/$categorySlug/$subcategorySlug")
         },
         {
           property: "og:url",
-          content: `/services/${params.categorySlug}/${params.subcategorySlug}`,
+          content: url,
         },
       ],
       links: [
         {
           rel: "canonical",
-          href: `/services/${params.categorySlug}/${params.subcategorySlug}`,
+          href: url,
         },
       ],
     };

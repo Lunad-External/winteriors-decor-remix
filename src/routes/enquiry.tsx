@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Enquiry from "@/pages/Enquiry";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/enquiry")({
   head: () => ({
@@ -11,10 +12,10 @@ export const Route = createFileRoute("/enquiry")({
           "Submit your interior design or fit-out project enquiry to Winteriors Decor LLC.",
       },
       { property: "og:title", content: "Project Enquiry — Winteriors Decor" },
-      { property: "og:url", content: "/enquiry" },
+        { property: "og:url", content: absoluteUrl("/enquiry") },
       { name: "robots", content: "noindex" },
     ],
-    links: [{ rel: "canonical", href: "/enquiry" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/enquiry") }],
   }),
   component: Enquiry,
 });

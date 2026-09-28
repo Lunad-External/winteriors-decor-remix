@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import ContactUs from "@/pages/ContactUs";
 import { siteContentQuery } from "@/lib/public-data.queries";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/contactus")({
   loader: ({ context }) =>
@@ -19,9 +20,9 @@ export const Route = createFileRoute("/contactus")({
         content:
           "Talk to our team about your next commercial interior design or fit-out project in the UAE.",
       },
-      { property: "og:url", content: "/contactus" },
+        { property: "og:url", content: absoluteUrl("/contactus") },
     ],
-    links: [{ rel: "canonical", href: "/contactus" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/contactus") }],
   }),
   component: ContactUs,
 });
