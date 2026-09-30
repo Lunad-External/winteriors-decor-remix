@@ -4,6 +4,7 @@ import {
   siteContentQuery,
   storageProjectsQuery,
 } from "@/lib/public-data.queries";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
