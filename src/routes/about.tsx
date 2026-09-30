@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import About from "@/pages/About";
 import { siteContentQuery } from "@/lib/public-data.queries";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/about")({
   loader: ({ context }) =>
@@ -19,9 +20,9 @@ export const Route = createFileRoute("/about")({
         content:
           "Leading interior design and turnkey fit-out company in the UAE with 17+ years of commercial project experience.",
       },
-      { property: "og:url", content: "/about" },
+        { property: "og:url", content: absoluteUrl("/about") },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/about") }],
   }),
   component: About,
 });

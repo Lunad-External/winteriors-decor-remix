@@ -29,9 +29,9 @@ export const Route = createFileRoute("/")({
         content:
           "Premium commercial interior design and turnkey fit-out across Dubai, Abu Dhabi and the UAE — offices, clinics, retail and hospitality.",
       },
-      { property: "og:url", content: "/" },
+        { property: "og:url", content: absoluteUrl("/") },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/") }],
   }),
   component: Index,
 });

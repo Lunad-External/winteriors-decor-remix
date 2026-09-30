@@ -22,6 +22,7 @@ import { Footer } from "@/components/layout/Footer";
 import { AuthProvider } from "@/hooks/useAuth";
 import { AdminToolbar } from "@/components/admin/AdminToolbar";
 import appCss from "@/index.css?url";
+import { absoluteUrl } from "@/lib/seo";
 
 function ErrorComponent({ error }: { error: Error }) {
   console.error(error);
@@ -64,13 +65,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       {
+        src: "https://www.googletagmanager.com/gtag/js?id=G-9K69BRZ0CK",
+        async: true,
+      },
+      {
+        children: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-9K69BRZ0CK');
+        `,
+      },
+      {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
           name: "Winteriors Decor LLC",
-          url: "https://winteriors-decor-updated.lovable.app",
-          logo: "https://winteriors-decor-updated.lovable.app/favicon.png",
+          url: absoluteUrl("/"),
+          logo: absoluteUrl("/favicon.png"),
           description: "Premium commercial interior design and fit-out company delivering turnkey workspace solutions across Dubai and Abu Dhabi for 17+ years.",
           telephone: "+971 2 6432711",
           areaServed: "AE",
@@ -87,7 +100,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@context": "https://schema.org",
           "@type": "WebSite",
           name: "Winteriors Decor LLC",
-          url: "https://winteriors-decor-updated.lovable.app",
+          url: absoluteUrl("/"),
         }),
       },
     ],

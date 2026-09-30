@@ -9,6 +9,7 @@ import type {
   StorageProjectDTO,
   ProjectImageDTO,
 } from "@/lib/public-data.functions";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/projects/$id")({
   loader: async ({ context, params }) => {
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/projects/$id")({
     };
   },
   head: ({ params, loaderData }) => {
+    const url = absoluteUrl(`/projects/${params.id}`);
     const title = loaderData?.title ?? "Project";
     const desc = loaderData?.category
       ? `${title} — ${loaderData.category} interior design and fit-out project by Winteriors Decor LLC.`
@@ -47,7 +49,7 @@ export const Route = createFileRoute("/projects/$id")({
       { property: "og:title", content: title },
       { property: "og:description", content: desc },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: `/projects/${params.id}` },
+      { property: "og:url", content: url },
     ];
     if (loaderData?.coverImage) {
       meta.push({ property: "og:image", content: loaderData.coverImage });
@@ -55,7 +57,7 @@ export const Route = createFileRoute("/projects/$id")({
     }
     return {
       meta,
-      links: [{ rel: "canonical", href: `/projects/${params.id}` }],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   component: ProjectDetail,

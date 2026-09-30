@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, useRouterState } from "@tanstack/react-router";
 import Projects from "@/pages/Projects";
 import { storageProjectsQuery } from "@/lib/public-data.queries";
+import { absoluteUrl } from "@/lib/seo";
 
 export const Route = createFileRoute("/projects")({
   loader: ({ context }) =>
@@ -19,9 +20,9 @@ export const Route = createFileRoute("/projects")({
         content:
           "Signature commercial interior design and fit-out projects delivered across the UAE by Winteriors Decor LLC.",
       },
-      { property: "og:url", content: "/projects" },
+        { property: "og:url", content: absoluteUrl("/projects") },
     ],
-    links: [{ rel: "canonical", href: "/projects" }],
+    links: [{ rel: "canonical", href: absoluteUrl("/projects") }],
   }),
   component: ProjectsRouteComponent,
 });

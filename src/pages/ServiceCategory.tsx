@@ -1,4 +1,4 @@
-import { useParams, Link, Navigate } from "react-router-dom";
+import { useParams, useLocation, Link, Navigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, ChevronRight } from "lucide-react";
@@ -6,6 +6,7 @@ import { Layout } from "@/components/layout/Layout";
 import { getCategoryBySlug, serviceHierarchy } from "@/data/serviceHierarchy";
 import { projects } from "@/data/projects";
 import { Button } from "@/components/ui/button";
+import { absoluteUrl } from "@/lib/seo";
 
 // Reuse existing project images for visual variety
 import heroServices from "@/assets/hero-services.jpg";
@@ -55,6 +56,7 @@ const processSteps = [
 
 const ServiceCategoryPage = () => {
   const { categorySlug } = useParams<{ categorySlug: string }>();
+  const location = useLocation();
   const category = getCategoryBySlug(categorySlug || "");
 
   if (!category) {
@@ -69,7 +71,9 @@ const ServiceCategoryPage = () => {
       <Helmet>
         <title>{category.metaTitle}</title>
         <meta name="description" content={category.metaDescription} />
-        <link rel="canonical" href={`https://winteriors-decor-llc.lovable.app/services/${category.slug}`} />
+        {location.pathname === `/services/${category.slug}` && (
+          <link rel="canonical" href={absoluteUrl(location.pathname)} />
+        )}
       </Helmet>
 
       {/* ── HERO ── */}

@@ -152,13 +152,12 @@ const ServiceSubcategoryPage = () => {
       <Helmet>
         <title>{subcategory.metaTitle}</title>
         <meta name="description" content={subcategory.metaDescription} />
-        <link rel="canonical" href={`https://winteriors-decor-llc.lovable.app/services/${category.slug}/${subcategory.slug}`} />
         <script type="application/ld+json">{JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ProfessionalService",
           name: `Winteriors — ${subcategory.name}`,
           description: subcategory.metaDescription,
-          url: `https://winteriors-decor-llc.lovable.app/services/${category.slug}/${subcategory.slug}`,
+          url: `https://www.winteriorsdecor.com/services/${category.slug}/${subcategory.slug}`,
           areaServed: ["Dubai", "Abu Dhabi", "UAE"],
         })}</script>
       </Helmet>
