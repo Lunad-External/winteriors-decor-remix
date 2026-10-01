@@ -1,7 +1,7 @@
 import { executeDbQuery, type QueryOptions } from '@/lib/db.server';
 
 class ServerQueryBuilder {
-  private opts: QueryOptions;
+  opts: QueryOptions;
 
   constructor(table: string) {
     this.opts = {

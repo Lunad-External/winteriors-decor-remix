@@ -1,21 +1,52 @@
 import fs from 'fs';
 import path from 'path';
 
-const nativeFiles = [
-  path.join(process.cwd(), 'node_modules', 'vite', 'node_modules', 'rollup', 'dist', 'native.js'),
-  path.join(process.cwd(), 'node_modules', 'rollup', 'dist', 'native.js'),
+// Complete AST safety patch for Rollup JS bundler
+const rollupFiles = [
+  path.join(process.cwd(), 'node_modules', 'vite', 'node_modules', 'rollup', 'dist', 'es', 'shared', 'node-entry.js'),
+  path.join(process.cwd(), 'node_modules', 'rollup', 'dist', 'es', 'shared', 'node-entry.js'),
 ];
 
-for (const nativeFile of nativeFiles) {
-  if (fs.existsSync(nativeFile)) {
-    let content = fs.readFileSync(nativeFile, 'utf8');
-    if (!content.includes('@rollup/wasm-node')) {
+for (const file of rollupFiles) {
+  if (fs.existsSync(file)) {
+    let content = fs.readFileSync(file, 'utf8');
+    let modified = false;
+
+    if (!content.includes('if (!nodes) return false;')) {
       content = content.replace(
-        'return require(id);',
-        `try { return require(id); } catch (e) { console.log('[Rollup] Native binary blocked, falling back to @rollup/wasm-node'); return require('@rollup/wasm-node'); }`
+        'function checkEffectForNodes(nodes, context) {',
+        'function checkEffectForNodes(nodes, context) { if (!nodes) return false;'
       );
-      fs.writeFileSync(nativeFile, content, 'utf8');
-      console.log('Successfully patched:', nativeFile);
+      modified = true;
+    }
+
+    if (content.includes('else if (value.hasEffects(context))')) {
+      content = content.replace(
+        'else if (value.hasEffects(context))',
+        'else if (value?.hasEffects(context))'
+      );
+      modified = true;
+    }
+
+    if (content.includes('for (const decorator of this.decorators) {')) {
+      content = content.replace(
+        'for (const decorator of this.decorators) {',
+        'for (const decorator of (this.decorators || [])) {'
+      );
+      modified = true;
+    }
+
+    if (content.includes('value.include(context, includeChildrenRecursively);')) {
+      content = content.replace(
+        'value.include(context, includeChildrenRecursively);',
+        'value?.include(context, includeChildrenRecursively);'
+      );
+      modified = true;
+    }
+
+    if (modified) {
+      fs.writeFileSync(file, content, 'utf8');
+      console.log('[Rollup Patch] Patched AST safety in:', file);
     }
   }
 }

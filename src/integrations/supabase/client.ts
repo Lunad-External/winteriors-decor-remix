@@ -3,7 +3,7 @@ import { syncDriveFn } from "@/lib/drive.functions";
 import type { QueryOptions } from "@/lib/db.server";
 
 class QueryBuilder {
-  private opts: QueryOptions;
+  opts: QueryOptions;
 
   constructor(table: string) {
     this.opts = {
