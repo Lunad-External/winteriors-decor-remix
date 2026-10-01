@@ -60,7 +60,7 @@ function parseGoogleDriveUrl(val: string): string {
     val.match(/[?&]id=([a-zA-Z0-9_-]{25,})/) ||
     val.match(/\/d\/([a-zA-Z0-9_-]{25,})/);
   if (driveMatch) {
-    return `https://lh3.googleusercontent.com/d/${driveMatch[1]}=w1000`;
+    return `https://drive.google.com/uc?export=view&id=${driveMatch[1]}`;
   }
   return val;
 }

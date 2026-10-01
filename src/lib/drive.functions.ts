@@ -27,8 +27,7 @@ async function fetchDriveList(apiKey: string, query: string): Promise<any[]> {
     const params = new URLSearchParams({
       q: query,
       key: apiKey,
-      fields: "files(id,name,mimeType),nextPageToken",
-      pageSize: "1000",
+      fields: "files(id,name,mimeType,thumbnailLink),nextPageToken",
       orderBy: "name",
     });
     if (pageToken) params.set("pageToken", pageToken);
@@ -45,6 +44,11 @@ async function fetchDriveList(apiKey: string, query: string): Promise<any[]> {
 
   return all;
 }
+
+function getDriveHiresUrl(img: any): string {
+  return `https://drive.usercontent.google.com/download?id=${img.id}&export=view`;
+}
+
 
 const DEFAULT_PROJECT_SLUGS = [
   { slug: "bens-cookies", title: "Ben's Cookies", category: "retail" },
@@ -159,17 +163,17 @@ export const syncDriveFn = createServerFn({ method: "POST" })
       // Upsert project images
       const imagesToUpsert = proj.images && proj.images.length > 0
         ? proj.images.map((img, idx) => ({
-            project_slug: proj.slug,
-            file_name: img.file_name,
-            storage_path: img.storage_path,
-            sort_order: idx,
-          }))
+          project_slug: proj.slug,
+          file_name: img.file_name,
+          storage_path: img.storage_path,
+          sort_order: idx,
+        }))
         : Array.from({ length: proj.image_count }).map((_, idx) => ({
-            project_slug: proj.slug,
-            file_name: `${String(idx + 1).padStart(2, '0')}.jpg`,
-            storage_path: `${proj.slug}/${String(idx + 1).padStart(2, '0')}.jpg`,
-            sort_order: idx,
-          }));
+          project_slug: proj.slug,
+          file_name: `${String(idx + 1).padStart(2, '0')}.jpg`,
+          storage_path: `${proj.slug}/${String(idx + 1).padStart(2, '0')}.jpg`,
+          sort_order: idx,
+        }));
 
       await executeDbQuery({
         table: "project_images",

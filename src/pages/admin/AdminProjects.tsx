@@ -39,7 +39,7 @@ export default function AdminProjects() {
     queryKey: ["admin-projects", showTrashed],
     queryFn: async () => {
       let query = supabase.from("projects").select("slug, title, category, image_count, cover_path, status, deleted_at, updated_at").order("updated_at", { ascending: false });
-      
+
       if (showTrashed) {
         query = query.not("deleted_at", "is", null);
       } else {
@@ -146,7 +146,20 @@ export default function AdminProjects() {
                       <TableCell>
                         <div className="w-14 h-10 rounded overflow-hidden bg-muted">
                           {project.cover_path ? (
-                            <img src={getStorageUrl(project.cover_path)} alt="" className="w-full h-full object-cover" />
+                            <img
+                              src={getStorageUrl(project.cover_path)}
+                              alt=""
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                const target = e.currentTarget;
+                                if (project.cover_path && /^[a-zA-Z0-9_-]{25,}$/.test(project.cover_path) && !target.dataset.triedThumbnail) {
+                                  target.dataset.triedThumbnail = "true";
+                                  target.src = `https://drive.google.com/thumbnail?id=${project.cover_path}&sz=w400`;
+                                  return;
+                                }
+                                target.src = "/src/assets/project-corporate.jpg";
+                              }}
+                            />
                           ) : (
                             <div className="w-full h-full flex items-center justify-center"><ImageIcon className="w-4 h-4 text-muted-foreground" /></div>
                           )}

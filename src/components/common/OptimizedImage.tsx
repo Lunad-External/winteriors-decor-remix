@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, ImgHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
-import { getStorageUrl } from "@/lib/storage";
+import { getStorageUrl, getDriveFallbackUrl } from "@/lib/storage";
 
 interface OptimizedImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
   src: string;
@@ -16,15 +16,9 @@ function getDriveUrl(src: string, width?: number): string {
   const resolved = getStorageUrl(src);
   if (!resolved) return resolved;
 
-  // Google Drive URLs
-  if (resolved.includes("lh3.googleusercontent.com")) {
-    if (resolved.includes("?")) return resolved;
-    if (width) {
-      return resolved.replace(/=s\d+$/, `=w${width}`).replace(/=w\d+$/, `=w${width}`);
-    }
-    if (!resolved.includes("=s0") && !resolved.includes("=w")) {
-      return resolved + "=s0";
-    }
+  // Google Drive thumbnail URLs — adjust sz= param for width (only w400 confirmed working)
+  if (resolved.includes("drive.google.com/thumbnail") && width && width <= 400) {
+    return resolved.replace(/&sz=w\d+$/, `&sz=w${width}`);
   }
 
   return resolved;
@@ -89,11 +83,15 @@ export function OptimizedImage({
           alt={alt}
           loading={eager ? "eager" : "lazy"}
           onLoad={() => setLoaded(true)}
-          onError={() => {
-            const fallback = getStorageUrl(null);
-            if (imgSrc !== fallback) {
-              setImgSrc(fallback);
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (!target.dataset.triedFallback) {
+              target.dataset.triedFallback = "true";
+              const fallback = getDriveFallbackUrl(target.src);
+              if (fallback) { target.src = fallback; return; }
             }
+            const fallbackSrc = getStorageUrl(null);
+            if (imgSrc !== fallbackSrc) setImgSrc(fallbackSrc);
           }}
           className={cn(
             "w-full h-full object-cover transition-opacity duration-500",

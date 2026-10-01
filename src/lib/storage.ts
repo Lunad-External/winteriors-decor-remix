@@ -226,15 +226,27 @@ export function getStorageUrl(path: string | null | undefined): string {
     if (path.includes("1NBp2iMD-o9oCZU51stXenfx8TMEFHK-k")) {
       return projectCorporate;
     }
+    const idMatch = path.match(/\/file\/d\/([a-zA-Z0-9_-]{25,})/) ||
+      path.match(/[?&]id=([a-zA-Z0-9_-]{25,})/) ||
+      path.match(/\/d\/([a-zA-Z0-9_-]{25,})/);
+    if (idMatch) {
+      return `/drive-image/${idMatch[1]}`;
+    }
+    if (path.includes("drive-storage")) {
+      const matchId = path.match(/([a-zA-Z0-9_-]{25,})/);
+      if (matchId) {
+        return `/drive-image/${matchId[1]}`;
+      }
+    }
     return path;
   }
 
-  // Check if path is a 25+ char Google Drive ID
+  // Check if path is a 25+ char Google Drive File ID
   if (/^[a-zA-Z0-9_-]{25,}$/.test(path)) {
     if (INVALID_DRIVE_IDS.has(path)) {
       return projectCorporate;
     }
-    return `https://lh3.googleusercontent.com/d/${path}=w1000`;
+    return `/drive-image/${path}`;
   }
 
   // Handle relative project storage paths (e.g. "bens-cookies/01.jpg" or "gulf-tech/05.jpg")
@@ -254,3 +266,18 @@ export function getStorageUrl(path: string | null | undefined): string {
 
   return projectCorporate;
 }
+
+/**
+ * Returns a direct usercontent fallback URL for img onError handlers.
+ * Extracts the Drive file ID from any supported URL format.
+ */
+export function getDriveFallbackUrl(src: string): string | null {
+  // Extract file ID from uc?export=view&id=... or thumbnail?id=... URLs
+  const match = src.match(/[?&]id=([a-zA-Z0-9_-]{25,})/);
+  if (match) {
+    return `https://drive.usercontent.google.com/download?id=${match[1]}&export=view`;
+  }
+  return null;
+}
+
+

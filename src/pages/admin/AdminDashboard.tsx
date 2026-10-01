@@ -2,12 +2,13 @@ import { useState } from "react";
 import { AdminLayout } from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  FolderOpen, Image, Eye, Layers, RefreshCw, CloudDownload, 
-  ArrowRight, Pencil, FileText, Globe 
+import {
+  FolderOpen, Image, Eye, Layers, RefreshCw, CloudDownload,
+  ArrowRight, Pencil, FileText, Globe
 } from "lucide-react";
 import { useStorageProjects } from "@/hooks/useStorageProjects";
 import { supabase } from "@/integrations/supabase/client";
+import { syncDriveFn } from "@/lib/drive.functions";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -23,13 +24,13 @@ export default function AdminDashboard() {
     queryFn: async () => {
       const [projRes, imgRes, pagesRes] = await Promise.all([
         supabase.from("projects").select("id, category", { count: "exact" }).is("deleted_at", null),
-        supabase.from("project_images").select("id", { count: "exact", head: true }),
+        supabase.from("project_images").select("id").limit(2000),
         supabase.from("cms_pages").select("id", { count: "exact", head: true }),
       ]);
       const cats = new Set((projRes.data || []).map((p: any) => (p.category || "").toLowerCase()));
       return {
         projects: projRes.count ?? (projRes.data?.length || 0),
-        images: imgRes.count ?? 0,
+        images: (imgRes.data || []).length,
         categories: cats.size,
         pages: Math.max(pagesRes.count ?? 0, 7),
       };
@@ -52,33 +53,22 @@ export default function AdminDashboard() {
 
   const runSync = async (scanOnly = false) => {
     setSyncing(true);
-    setSyncLog(prev => [...prev, scanOnly ? "Scanning Google Drive..." : "Syncing images to storage..."]);
+    setSyncLog(prev => [...prev, scanOnly ? "Scanning Google Drive..." : "Syncing projects & images..."]);
 
     try {
-      const { data, error } = await supabase.functions.invoke("sync-to-storage", {
-        body: { scanOnly, max: 5 },
-      });
-
-      if (error) throw error;
+      const data = await syncDriveFn({ data: { scanOnly, max: 10 } });
 
       if (scanOnly) {
         setSyncLog(prev => [...prev, `Found ${data.totalProjects} projects in Google Drive`]);
-        if (data.projects) {
-          const missing = data.projects.filter((dp: any) =>
-            !projects.find(p => p.id === dp.slug)
-          );
-          setSyncLog(prev => [...prev, `${missing.length} projects not yet in database`]);
-        }
       } else {
         setSyncLog(prev => [
           ...prev,
-          `Processed: ${data.processed?.length || 0} projects`,
-          ...((data.processed || []).map((r: any) => `  ${r.slug}: ${r.status}${r.images ? ` (${r.images} images)` : ""}`)),
-          data.remaining > 0 ? `${data.remaining} projects remaining — run sync again` : "All projects synced!",
+          `Processed ${data.processed?.length || data.synced || 0} projects`,
+          data.message || "Sync finished!",
         ]);
       }
 
-      toast({ title: "Sync complete", description: scanOnly ? `Found ${data.totalProjects} projects` : `Processed ${data.processed?.length || 0} projects` });
+      toast({ title: "Sync complete", description: `${data.totalProjects || 0} projects found` });
     } catch (err: any) {
       setSyncLog(prev => [...prev, `Error: ${err.message}`]);
       toast({ title: "Sync failed", description: err.message, variant: "destructive" });
@@ -166,7 +156,23 @@ export default function AdminDashboard() {
                   <div key={project.id} className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-muted/50 transition-colors">
                     <div className="w-12 h-9 rounded-md overflow-hidden bg-muted shrink-0">
                       {project.coverImage && (
-                        <img src={project.coverImage} alt={project.title} className="w-full h-full object-cover" />
+                        <img
+                          src={project.coverImage}
+                          alt={project.title}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (!target.dataset.triedThumbnail) {
+                              target.dataset.triedThumbnail = "true";
+                              const match = project.coverImage?.match(/[?&]id=([a-zA-Z0-9_-]{25,})/) || project.coverImage?.match(/\/d\/([a-zA-Z0-9_-]{25,})/);
+                              if (match) {
+                                target.src = `https://drive.google.com/thumbnail?id=${match[1]}&sz=w400`;
+                                return;
+                              }
+                            }
+                            target.src = "/src/assets/project-corporate.jpg";
+                          }}
+                        />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">

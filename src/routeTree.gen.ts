@@ -39,6 +39,7 @@ import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonia
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as BlogsIndexRouteImport } from './routes/blogs.index'
 import { Route as BlogsSlugRouteImport } from './routes/blogs.$slug'
+import { Route as DriveImageIdRouteImport } from './routes/drive-image.$id'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as ProjectsIdRouteImport } from './routes/projects.$id'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
@@ -198,6 +199,11 @@ const BlogsSlugRoute = BlogsSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogsRoute,
 } as any)
+const DriveImageIdRoute = DriveImageIdRouteImport.update({
+  id: '/drive-image/$id',
+  path: '/drive-image/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -269,6 +275,7 @@ export interface FileRoutesByFullPath {
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
+  '/drive-image/$id': typeof DriveImageIdRoute
   '/projects/$id': typeof ProjectsIdRoute
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
@@ -305,6 +312,7 @@ export interface FileRoutesByTo {
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
+  '/drive-image/$id': typeof DriveImageIdRoute
   '/projects/$id': typeof ProjectsIdRoute
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin': typeof AdminIndexRoute
@@ -346,6 +354,7 @@ export interface FileRoutesById {
   '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/users': typeof AdminUsersRoute
   '/blogs/$slug': typeof BlogsSlugRoute
+  '/drive-image/$id': typeof DriveImageIdRoute
   '/projects/$id': typeof ProjectsIdRoute
   '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
@@ -388,6 +397,7 @@ export interface FileRouteTypes {
     | '/admin/testimonials'
     | '/admin/users'
     | '/blogs/$slug'
+    | '/drive-image/$id'
     | '/projects/$id'
     | '/services/$categorySlug'
     | '/admin/'
@@ -424,6 +434,7 @@ export interface FileRouteTypes {
     | '/admin/testimonials'
     | '/admin/users'
     | '/blogs/$slug'
+    | '/drive-image/$id'
     | '/projects/$id'
     | '/services/$categorySlug'
     | '/admin'
@@ -464,6 +475,7 @@ export interface FileRouteTypes {
     | '/admin/testimonials'
     | '/admin/users'
     | '/blogs/$slug'
+    | '/drive-image/$id'
     | '/projects/$id'
     | '/services/$categorySlug'
     | '/admin/'
@@ -504,6 +516,7 @@ export interface RootRouteChildren {
   AdminTeamRoute: typeof AdminTeamRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   AdminUsersRoute: typeof AdminUsersRoute
+  DriveImageIdRoute: typeof DriveImageIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
@@ -719,6 +732,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogsSlugRouteImport
       parentRoute: typeof BlogsRoute
     }
+    '/drive-image/$id': {
+      id: '/drive-image/$id'
+      path: '/drive-image/$id'
+      fullPath: '/drive-image/$id'
+      preLoaderRoute: typeof DriveImageIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/projects/': {
       id: '/projects/'
       path: '/'
@@ -884,6 +904,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminTeamRoute: AdminTeamRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
   AdminUsersRoute: AdminUsersRoute,
+  DriveImageIdRoute: DriveImageIdRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport

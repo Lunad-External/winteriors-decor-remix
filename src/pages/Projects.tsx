@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Helmet } from "react-helmet-async";
 import { Link } from "@tanstack/react-router";
 import { useStorageProjects, storageCategories } from "@/hooks/useStorageProjects";
+import { getDriveFallbackUrl } from "@/lib/storage";
 import { ImageIcon } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -21,7 +22,27 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
               <ImageIcon className="w-12 h-12 text-muted-foreground/30" />
             </div>
           ) : (
-            <img src={project.coverImage} alt={project.title} className={`w-full h-full object-cover block transition-all duration-[1.5s] ease-out group-hover:scale-[1.05] ${loaded ? 'opacity-100' : 'opacity-0'}`} loading="eager" decoding="async" fetchPriority={index < 6 ? "high" : "auto"} onLoad={() => setLoaded(true)} onError={() => setError(true)} />
+            <img
+              src={project.coverImage}
+              alt={project.title}
+              className={`w-full h-full object-cover block transition-all duration-[1.5s] ease-out group-hover:scale-[1.05] ${loaded ? 'opacity-100' : 'opacity-0'}`}
+              loading={index < 6 ? "eager" : "lazy"}
+              decoding="async"
+              fetchpriority={index < 6 ? "high" : "low"}
+              onLoad={() => setLoaded(true)}
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.dataset.triedFallback) {
+                  target.dataset.triedFallback = "true";
+                  const fallback = getDriveFallbackUrl(target.src);
+                  if (fallback) {
+                    target.src = fallback;
+                    return;
+                  }
+                }
+                setError(true);
+              }}
+            />
           )}
           <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10 text-center bg-gradient-to-t from-black/60 via-black/20 to-transparent">
             <h3 className="text-base md:text-lg lg:text-xl font-semibold text-white uppercase tracking-[0.12em] font-poppins leading-snug">{project.title}</h3>

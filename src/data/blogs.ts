@@ -60,12 +60,12 @@ export function resolveBlogImageUrl(url?: string | null): string {
                          cleanUrl.match(/[?&]id=([a-zA-Z0-9_-]{25,})/) ||
                          cleanUrl.match(/\/d\/([a-zA-Z0-9_-]{25,})/);
   if (driveFileMatch) {
-    return `https://lh3.googleusercontent.com/d/${driveFileMatch[1]}=w1000`;
+    return `https://drive.google.com/uc?export=view&id=${driveFileMatch[1]}`;
   }
 
   // Parse raw 25+ char Google Drive ID
   if (/^[a-zA-Z0-9_-]{25,}$/.test(cleanUrl)) {
-    return `https://lh3.googleusercontent.com/d/${cleanUrl}=w1000`;
+    return `https://drive.google.com/uc?export=view&id=${cleanUrl}`;
   }
 
   if (LEGACY_BLOG_IMAGE_URLS[cleanUrl]) return LEGACY_BLOG_IMAGE_URLS[cleanUrl];

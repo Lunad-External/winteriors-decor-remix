@@ -12,10 +12,12 @@ export const siteContentQuery = queryOptions({
   staleTime: 60_000,
 });
 
+// "v4" forces re-fetch with new uc?export=view Drive URL format
 export const storageProjectsQuery = queryOptions({
-  queryKey: ["storage-projects"],
+  queryKey: ["storage-projects", "v4"],
   queryFn: () => getStorageProjectsFn(),
-  staleTime: 60_000,
+  staleTime: 30_000,
+  retry: false,
 });
 
 export const projectImagesQuery = (folder: string) =>
