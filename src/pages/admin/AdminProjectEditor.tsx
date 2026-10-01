@@ -23,14 +23,24 @@ function slugify(text: string): string {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 }
 
-function getStorageUrl(path: string): string {
-  if (!path) return "";
-  if (path.startsWith("http")) return path;
-  return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/project-images/${path}`;
-}
+import { getStorageUrl } from "@/lib/storage";
 
 export default function AdminProjectEditor() {
-  const { id } = useParams<{ id: string }>();
+  const params = useParams<Record<string, string>>();
+  
+  // Extract project ID reliably from params or URL path
+  const getTargetId = () => {
+    if (params.id && params.id !== "edit") return params.id;
+    const parts = typeof window !== "undefined" ? window.location.pathname.split("/").filter(Boolean) : [];
+    const projIdx = parts.indexOf("projects");
+    if (projIdx !== -1 && parts[projIdx + 1]) {
+      const val = parts[projIdx + 1];
+      return val === "edit" ? "" : val;
+    }
+    return "";
+  };
+
+  const id = getTargetId();
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -71,35 +81,60 @@ export default function AdminProjectEditor() {
 
   // Load project data
   useEffect(() => {
-    if (isNew) { initialLoad.current = false; return; }
+    initialLoad.current = true;
+    setHasUnsaved(false);
+
+    if (isNew) {
+      setTitle("");
+      setSlug("");
+      setExistingSlug("");
+      setShortDescription("");
+      setLongDescription("");
+      setClientName("");
+      setLocation("");
+      setProjectType("");
+      setCategory("offices");
+      setStatus("published");
+      setFeaturedImageId(null);
+      setImages([]);
+      setLoading(false);
+      initialLoad.current = false;
+      return;
+    }
+
+    setLoading(true);
 
     async function load() {
-      const { data: project, error } = await supabase
+      const cleanId = id.trim();
+      const decodedId = decodeURIComponent(cleanId);
+      
+      const { data: projects } = await supabase
         .from("projects")
         .select("*")
-        .eq("slug", id ?? "")
-        .maybeSingle();
+        .or(`slug.eq.${cleanId},slug.eq.${decodedId}`)
+        .limit(1);
 
-      if (error || !project) {
-        toast({ title: "Project not found", description: "This project may have been deleted.", variant: "destructive" });
+      const project = projects?.[0];
+
+      if (!project) {
+        toast({ title: "Project not found", description: `Could not find project "${cleanId}".`, variant: "destructive" });
         navigate("/admin/projects");
         return;
       }
 
-      setTitle(project.title);
-      setSlug(project.slug);
-      setExistingSlug(project.slug);
+      setTitle(project.title || "");
+      setSlug(project.slug || "");
+      setExistingSlug(project.slug || "");
       setShortDescription(project.short_description || "");
       setLongDescription(project.long_description || "");
       setClientName(project.client_name || "");
       setLocation(project.location || "");
       setProjectType(project.project_type || "");
-      setCategory(project.category);
+      setCategory(project.category || "offices");
       setStatus(project.status || "published");
       setFeaturedImageId(project.featured_image_id || null);
 
       setLoading(false);
-      // Allow a tick before tracking changes
       setTimeout(() => { initialLoad.current = false; }, 100);
     }
 

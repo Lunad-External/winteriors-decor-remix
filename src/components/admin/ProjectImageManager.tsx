@@ -24,11 +24,7 @@ interface Props {
   onSetFeatured: (imageId: string | null) => void;
 }
 
-function getStorageUrl(path: string): string {
-  if (!path) return "";
-  if (path.startsWith("http")) return path;
-  return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/project-images/${path}`;
-}
+import { getStorageUrl } from "@/lib/storage";
 
 /** Syncs image_count AND cover_path on the projects row so listing pages stay accurate */
 async function syncProjectMeta(slug: string, images: ManagedImage[], featuredImageId: string | null) {

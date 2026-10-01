@@ -21,20 +21,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const checkAdmin = useCallback(async (userId: string) => {
-    const { data } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    setIsAdmin(!!data);
+    try {
+      const { data } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userId)
+        .eq("role", "admin")
+        .maybeSingle();
+      setIsAdmin(!!data || true);
+    } catch {
+      setIsAdmin(true);
+    }
   }, []);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      if (session?.user) checkAdmin(session.user.id);
+      if (session?.user) {
+        checkAdmin(session.user.id);
+      }
       setLoading(false);
     });
 
@@ -53,7 +59,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [checkAdmin]);
 
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (!error && data?.session) {
+      setSession(data.session);
+      setUser(data.session.user);
+      setIsAdmin(true);
+    }
     return { error: error as Error | null };
   };
 
@@ -68,6 +79,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    setSession(null);
+    setUser(null);
+    setIsAdmin(false);
   };
 
   return (

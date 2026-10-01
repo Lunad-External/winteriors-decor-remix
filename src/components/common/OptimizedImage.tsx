@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, ImgHTMLAttributes } from "react";
 import { cn } from "@/lib/utils";
+import { getStorageUrl } from "@/lib/storage";
 
 interface OptimizedImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, "src"> {
   src: string;
@@ -11,26 +12,22 @@ interface OptimizedImageProps extends Omit<ImgHTMLAttributes<HTMLImageElement>, 
   eager?: boolean;
 }
 
-/**
- * Generates a resized Google Drive URL.
- * Original: =s0
- * Thumbnail: =w{width}
- */
 function getDriveUrl(src: string, width?: number): string {
-  if (!src) return src;
+  const resolved = getStorageUrl(src);
+  if (!resolved) return resolved;
 
   // Google Drive URLs
-  if (src.includes("lh3.googleusercontent.com")) {
+  if (resolved.includes("lh3.googleusercontent.com")) {
+    if (resolved.includes("?")) return resolved;
     if (width) {
-      return src.replace(/=s\d+$/, `=w${width}`).replace(/=w\d+$/, `=w${width}`);
+      return resolved.replace(/=s\d+$/, `=w${width}`).replace(/=w\d+$/, `=w${width}`);
     }
-    // Ensure full resolution
-    if (!src.includes("=s0") && !src.includes("=w")) {
-      return src + "=s0";
+    if (!resolved.includes("=s0") && !resolved.includes("=w")) {
+      return resolved + "=s0";
     }
   }
 
-  return src;
+  return resolved;
 }
 
 export function OptimizedImage({
@@ -44,9 +41,13 @@ export function OptimizedImage({
 }: OptimizedImageProps) {
   const [loaded, setLoaded] = useState(false);
   const [inView, setInView] = useState(eager);
+  const [imgSrc, setImgSrc] = useState<string>(() => getDriveUrl(src));
   const imgRef = useRef<HTMLImageElement>(null);
 
-  const fullSrc = getDriveUrl(src);
+  useEffect(() => {
+    setImgSrc(getDriveUrl(src));
+  }, [src]);
+
   const thumbSrc = blurUp && thumbnailWidth ? getDriveUrl(src, thumbnailWidth) : undefined;
 
   // Lazy loading via IntersectionObserver
@@ -84,10 +85,16 @@ export function OptimizedImage({
       {/* Full image */}
       {inView && (
         <img
-          src={fullSrc}
+          src={imgSrc}
           alt={alt}
           loading={eager ? "eager" : "lazy"}
           onLoad={() => setLoaded(true)}
+          onError={() => {
+            const fallback = getStorageUrl(null);
+            if (imgSrc !== fallback) {
+              setImgSrc(fallback);
+            }
+          }}
           className={cn(
             "w-full h-full object-cover transition-opacity duration-500",
             loaded ? "opacity-100" : "opacity-0"

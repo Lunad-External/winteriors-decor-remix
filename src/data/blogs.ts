@@ -54,6 +54,20 @@ const LOVABLE_ASSET_PATTERN = /^\/__l5e\/assets-v1\/[^/]+\/(blog-\d+\.jpg)$/i;
 export function resolveBlogImageUrl(url?: string | null): string {
   if (!url) return "";
   const cleanUrl = url.trim();
+
+  // Parse Google Drive share links (e.g. https://drive.google.com/file/d/1ABC.../view or open?id=1ABC...)
+  const driveFileMatch = cleanUrl.match(/\/file\/d\/([a-zA-Z0-9_-]{25,})/) ||
+                         cleanUrl.match(/[?&]id=([a-zA-Z0-9_-]{25,})/) ||
+                         cleanUrl.match(/\/d\/([a-zA-Z0-9_-]{25,})/);
+  if (driveFileMatch) {
+    return `https://lh3.googleusercontent.com/d/${driveFileMatch[1]}=w1000`;
+  }
+
+  // Parse raw 25+ char Google Drive ID
+  if (/^[a-zA-Z0-9_-]{25,}$/.test(cleanUrl)) {
+    return `https://lh3.googleusercontent.com/d/${cleanUrl}=w1000`;
+  }
+
   if (LEGACY_BLOG_IMAGE_URLS[cleanUrl]) return LEGACY_BLOG_IMAGE_URLS[cleanUrl];
   const match = cleanUrl.match(LOVABLE_ASSET_PATTERN);
   if (match && LOCAL_BLOG_IMAGES[match[1]]) return LOCAL_BLOG_IMAGES[match[1]];

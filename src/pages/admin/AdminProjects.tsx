@@ -25,11 +25,7 @@ interface ProjectRow {
   updated_at: string | null;
 }
 
-function getStorageUrl(path: string): string {
-  if (!path) return "";
-  if (path.startsWith("http")) return path;
-  return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/project-images/${path}`;
-}
+import { getStorageUrl } from "@/lib/storage";
 
 export default function AdminProjects() {
   const [search, setSearch] = useState("");

@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import type { Database } from "@/integrations/supabase/types";
+import { executeDbQuery } from "@/lib/db.server";
 
 const confidentialRenames: Record<string, string> = {
   "athar medical centre": "Confidential Project 6",
@@ -22,38 +21,31 @@ const REPLACED_IMAGE_VERSION: Record<string, string> = {
   "confidential-project-02/Meeting_room-1-5th_floor-v1.jpg": "202606221810",
 };
 
+const PROJECT_ASSET_MAP: Record<string, string> = {
+  "bens-cookies": "/src/assets/project-retail.jpg",
+  "gulf-tech": "/src/assets/project-corporate.jpg",
+  "all-energy-services-aes": "/src/assets/project-openplan.jpg",
+  "sts-library": "/src/assets/project-library.jpg",
+  "alpha-data": "/src/assets/gallery-boardroom.jpg",
+  "rais-hassan-saadi": "/src/assets/bg-corporate-office.jpg",
+  "adveti-library": "/src/assets/project-library.jpg",
+  "alpha-data-phase-2": "/src/assets/bg-modern-workspace.jpg",
+  "bens-cookies-phase-2": "/src/assets/project-boutique.jpg",
+  "bens-cookies-phase-3": "/src/assets/bg-retail-space.jpg",
+  "network-operations-center": "/src/assets/project-hotel-lobby.jpg",
+  "command-control-center": "/src/assets/project-clinic.jpg",
+  "emirates-group-office": "/src/assets/bg-conference-room.jpg",
+  "training-academy": "/src/assets/bg-hotel-lobby.jpg",
+  "tech-hub-innovation-center": "/src/assets/project-hospitality.jpg",
+};
+
 function renameIfConfidential(title: string): string {
   return confidentialRenames[title.toLowerCase().trim()] || title;
 }
+import { getStorageUrl } from "@/lib/storage";
+
 function normalizeCategory(cat: string): string {
   return (cat || "").replace(/-/g, " ").toLowerCase().trim();
-}
-function getBaseUrl(): string {
-  return (
-    process.env.SUPABASE_URL ||
-    process.env.VITE_SUPABASE_URL ||
-    "https://yyvcgmnmhoufcxtuyzpk.supabase.co"
-  );
-}
-function getStorageUrl(path: string): string {
-  if (!path) return "";
-  if (path.startsWith("http")) return path;
-  const v = REPLACED_IMAGE_VERSION[path];
-  const suffix = v ? `?v=${v}` : "";
-  return `${getBaseUrl()}/storage/v1/object/public/project-images/${path}${suffix}`;
-}
-
-function getServerSupabase() {
-  const url =
-    process.env.SUPABASE_URL ||
-    process.env.VITE_SUPABASE_URL ||
-    "https://yyvcgmnmhoufcxtuyzpk.supabase.co";
-  const key =
-    process.env.SUPABASE_PUBLISHABLE_KEY ||
-    process.env.VITE_SUPABASE_PUBLISHABLE_KEY!;
-  return createClient<Database>(url, key, {
-    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-  });
 }
 
 export interface StorageProjectDTO {
@@ -81,10 +73,13 @@ export interface ProjectCmsDTO {
 
 export const getSiteContentFn = createServerFn({ method: "GET" }).handler(
   async (): Promise<Record<string, string>> => {
-    const supabase = getServerSupabase();
-    const { data } = await supabase.from("site_content").select("key, value");
+    const { data } = await executeDbQuery({
+      table: "site_content",
+      action: "select",
+      columns: "key, value",
+    });
     const map: Record<string, string> = {};
-    (data || []).forEach((row) => {
+    (data || []).forEach((row: any) => {
       if (row.key && row.value != null) map[row.key] = row.value as string;
     });
     return map;
@@ -93,12 +88,11 @@ export const getSiteContentFn = createServerFn({ method: "GET" }).handler(
 
 export const getStorageProjectsFn = createServerFn({ method: "GET" }).handler(
   async (): Promise<StorageProjectDTO[]> => {
-    const supabase = getServerSupabase();
-    const { data, error } = await supabase
-      .from("projects")
-      .select(
-        "slug, title, category, drive_folder_id, cover_path, image_count, status, deleted_at",
-      );
+    const { data, error } = await executeDbQuery({
+      table: "projects",
+      action: "select",
+      columns: "slug, title, category, drive_folder_id, cover_path, image_count, status, deleted_at",
+    });
     if (error || !data) return [];
     return data
       .filter(
@@ -113,31 +107,34 @@ export const getStorageProjectsFn = createServerFn({ method: "GET" }).handler(
         title: renameIfConfidential(p.title),
         category: normalizeCategory(p.category),
         folder: p.drive_folder_id || p.slug,
-        coverImage: p.cover_path ? getStorageUrl(p.cover_path) : "",
+        coverImage: getStorageUrl(p.cover_path),
         imageCount: p.image_count || 0,
       }));
   },
 );
 
-
-
 export const getProjectImagesFn = createServerFn({ method: "GET" })
   .validator((input) => z.object({ folder: z.string().min(1) }).parse(input))
   .handler(async ({ data }): Promise<ProjectImageDTO[]> => {
-    const supabase = getServerSupabase();
     const folder = data.folder.trim();
-    const { data: project } = await supabase
-      .from("projects")
-      .select("slug")
-      .or(`drive_folder_id.eq.${folder},slug.eq.${folder}`)
-      .limit(1)
-      .maybeSingle();
+    const { data: projects } = await executeDbQuery({
+      table: "projects",
+      action: "select",
+      columns: "slug",
+      orConditions: `drive_folder_id.eq.${folder},slug.eq.${folder}`,
+      limit: 1,
+    });
+    const project = projects?.[0];
     if (!project) return [];
-    const { data: imgs } = await supabase
-      .from("project_images")
-      .select("file_name, storage_path, sort_order")
-      .eq("project_slug", project.slug)
-      .order("sort_order");
+
+    const { data: imgs } = await executeDbQuery({
+      table: "project_images",
+      action: "select",
+      columns: "file_name, storage_path, sort_order",
+      filters: [{ column: "project_slug", op: "eq", value: project.slug }],
+      order: [{ column: "sort_order", ascending: true }],
+    });
+
     return (imgs || []).map((img: any) => ({
       name: img.file_name,
       url: getStorageUrl(img.storage_path),
@@ -148,13 +145,12 @@ export const getProjectImagesFn = createServerFn({ method: "GET" })
 export const getProjectCmsFn = createServerFn({ method: "GET" })
   .validator((input) => z.object({ slug: z.string().min(1) }).parse(input))
   .handler(async ({ data }): Promise<ProjectCmsDTO | null> => {
-    const supabase = getServerSupabase();
-    const { data: row } = await supabase
-      .from("projects")
-      .select(
-        "short_description, long_description, client_name, location, project_type",
-      )
-      .eq("slug", data.slug)
-      .maybeSingle();
-    return (row as ProjectCmsDTO) ?? null;
+    const { data: rows } = await executeDbQuery({
+      table: "projects",
+      action: "select",
+      columns: "short_description, long_description, client_name, location, project_type",
+      filters: [{ column: "slug", op: "eq", value: data.slug }],
+      limit: 1,
+    });
+    return (rows?.[0] as ProjectCmsDTO) ?? null;
   });

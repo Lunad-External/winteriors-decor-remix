@@ -1,24 +1,10 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
 import { z } from "zod";
-import type { Database } from "@/integrations/supabase/types";
+import { executeDbQuery } from "@/lib/db.server";
 
 const SMTP2GO_API_KEY = "api-D59F13BD53EE4E488CB11DAE1C2CC961";
 const VERIFIED_SENDER = "website@winteriorsdecor.com";
 const RECIPIENT_EMAIL = "info@winteriorsdecor.com";
-
-function getServerSupabase() {
-  const url =
-    process.env.SUPABASE_URL ||
-    process.env.VITE_SUPABASE_URL ||
-    "https://yyvcgmnmhoufcxtuyzpk.supabase.co";
-  const key =
-    process.env.SUPABASE_PUBLISHABLE_KEY ||
-    process.env.VITE_SUPABASE_PUBLISHABLE_KEY!;
-  return createClient<Database>(url, key, {
-    auth: { storage: undefined, persistSession: false, autoRefreshToken: false },
-  });
-}
 
 const attachmentSchema = z.object({
   filename: z.string(),
@@ -42,17 +28,20 @@ export const submitFormFn = createServerFn({ method: "POST" })
     const { name, email, phone, company, message, type, attachments } = data;
 
     // 1. Insert into database
-    const supabase = getServerSupabase();
     const enquiryId = crypto.randomUUID();
 
-    const { error: dbError } = await supabase.from("enquiries").insert({
-      id: enquiryId,
-      name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      company: company?.trim() || null,
-      message: `${type}: ${message.trim()}`,
-      status: "new",
+    const { error: dbError } = await executeDbQuery({
+      table: "enquiries",
+      action: "insert",
+      data: {
+        id: enquiryId,
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        company: company?.trim() || null,
+        message: `${type}: ${message.trim()}`,
+        status: "new",
+      },
     });
 
     if (dbError) {
