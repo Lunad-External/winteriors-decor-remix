@@ -1,102 +1,119 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { setDefaultAutoSelectFamilyAttemptTimeout } from "node:net";
+import path from "node:path";
 
-// Server-side in-memory cache to make images load instantly after the first fetch
-interface CachedImage {
+// Node's default 250ms per-address connect timeout is too short for
+// Google's image servers on slower networks (fetch fails with ETIMEDOUT)
+setDefaultAutoSelectFamilyAttemptTimeout(2000);
+
+// Images are cached on disk so each Drive file is downloaded once and
+// survives server restarts/deploys. Override the location with IMAGE_CACHE_DIR.
+const CACHE_DIR = process.env.IMAGE_CACHE_DIR || path.join(process.cwd(), ".cache", "drive-images");
+
+// Drive originals are often 2-5 MB camera photos; serve a resized copy instead.
+const DEFAULT_WIDTH = 1600;
+const ALLOWED_WIDTHS = [400, 800, 1200, 1600, 2000];
+
+interface DriveImage {
   data: Uint8Array;
   contentType: string;
-  timestamp: number;
 }
 
-const imageCache = new Map<string, CachedImage>();
-const MAX_CACHE_ENTRIES = 100;
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+// Concurrent requests for the same uncached image share one Drive download
+const inFlight = new Map<string, Promise<DriveImage | null>>();
 
-function getFromCache(id: string): CachedImage | null {
-  const item = imageCache.get(id);
-  if (!item) return null;
-  if (Date.now() - item.timestamp > CACHE_TTL_MS) {
-    imageCache.delete(id);
+function pickWidth(requested: string | null): number {
+  const w = Number(requested);
+  if (!w) return DEFAULT_WIDTH;
+  return ALLOWED_WIDTHS.find((allowed) => allowed >= w) ?? ALLOWED_WIDTHS[ALLOWED_WIDTHS.length - 1];
+}
+
+async function readCache(key: string): Promise<DriveImage | null> {
+  try {
+    const file = path.join(CACHE_DIR, key);
+    const [data, contentType] = await Promise.all([readFile(file), readFile(`${file}.type`, "utf8")]);
+    return { data: new Uint8Array(data), contentType };
+  } catch {
     return null;
   }
-  return item;
 }
 
-function setToCache(id: string, data: Uint8Array, contentType: string) {
-  if (imageCache.size >= MAX_CACHE_ENTRIES) {
-    // Evict oldest entry
-    const oldestKey = imageCache.keys().next().value;
-    if (oldestKey) imageCache.delete(oldestKey);
+async function writeCache(key: string, image: DriveImage) {
+  try {
+    await mkdir(CACHE_DIR, { recursive: true });
+    const file = path.join(CACHE_DIR, key);
+    // Write to a temp file then rename, so a crash never leaves a half-written image
+    const tmp = `${file}.${process.pid}.tmp`;
+    await writeFile(tmp, image.data);
+    await writeFile(`${file}.type`, image.contentType);
+    await rename(tmp, file);
+  } catch (err) {
+    console.warn(`Drive image cache write failed for ${key}:`, err);
   }
-  imageCache.set(id, { data, contentType, timestamp: Date.now() });
+}
+
+async function fetchImage(url: string): Promise<DriveImage | null> {
+  try {
+    const res = await fetch(url, { redirect: "follow" });
+    const contentType = res.headers.get("content-type") || "";
+    // Drive answers private/missing files with an HTML page, so require an image
+    if (!res.ok || !contentType.startsWith("image/")) return null;
+    return { data: new Uint8Array(await res.arrayBuffer()), contentType };
+  } catch (err) {
+    console.warn(`Drive image fetch failed for ${url}:`, err);
+    return null;
+  }
+}
+
+async function fetchFromDrive(fileId: string, width: number): Promise<DriveImage | null> {
+  return (
+    (await fetchImage(`https://drive.google.com/thumbnail?id=${fileId}&sz=w${width}`)) ??
+    // Fall back to the full original if Drive can't make a resized copy
+    (await fetchImage(`https://drive.usercontent.google.com/download?id=${fileId}&export=view`)) ??
+    (await fetchImage(`https://drive.google.com/uc?export=view&id=${fileId}`))
+  );
+}
+
+async function getImage(fileId: string, width: number): Promise<{ image: DriveImage | null; hit: boolean }> {
+  const key = `${fileId}_w${width}`;
+  const cached = await readCache(key);
+  if (cached) return { image: cached, hit: true };
+
+  let pending = inFlight.get(key);
+  if (!pending) {
+    pending = fetchFromDrive(fileId, width).then(async (image) => {
+      if (image) await writeCache(key, image);
+      return image;
+    });
+    inFlight.set(key, pending);
+    pending.finally(() => inFlight.delete(key));
+  }
+  return { image: await pending, hit: false };
 }
 
 export const Route = createFileRoute("/drive-image/$id")({
   server: {
     handlers: {
-      GET: async ({ params }) => {
+      GET: async ({ params, request }) => {
         const fileId = params.id;
         if (!fileId || !/^[a-zA-Z0-9_-]{25,}$/.test(fileId)) {
           return new Response("Invalid Google Drive File ID", { status: 400 });
         }
 
-        // Return from in-memory RAM cache instantly if available (0ms load time)
-        const cached = getFromCache(fileId);
-        if (cached) {
-          return new Response(cached.data, {
-            headers: {
-              "Content-Type": cached.contentType,
-              "Cache-Control": "public, max-age=31536000, immutable",
-              "X-Cache": "HIT",
-            },
-          });
+        const width = pickWidth(new URL(request.url).searchParams.get("w"));
+        const { image, hit } = await getImage(fileId, width);
+        if (!image) {
+          return new Response("Failed to fetch image from Google Drive", { status: 502 });
         }
 
-        // Fetch from Google Drive usercontent endpoint
-        const primaryUrl = `https://drive.usercontent.google.com/download?id=${fileId}&export=view`;
-        try {
-          const res = await fetch(primaryUrl);
-          if (res.ok) {
-            const contentType = res.headers.get("content-type") || "image/jpeg";
-            const buffer = new Uint8Array(await res.arrayBuffer());
-            
-            // Cache in memory for instant subsequent loads
-            setToCache(fileId, buffer, contentType);
-
-            return new Response(buffer, {
-              headers: {
-                "Content-Type": contentType,
-                "Cache-Control": "public, max-age=31536000, immutable",
-                "X-Cache": "MISS",
-              },
-            });
-          }
-        } catch (err) {
-          console.warn(`Drive proxy primary fetch failed for ID ${fileId}:`, err);
-        }
-
-        // Fallback to uc?export=view if primary fails
-        const fallbackUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
-        try {
-          const res = await fetch(fallbackUrl);
-          if (res.ok) {
-            const contentType = res.headers.get("content-type") || "image/jpeg";
-            const buffer = new Uint8Array(await res.arrayBuffer());
-            
-            setToCache(fileId, buffer, contentType);
-
-            return new Response(buffer, {
-              headers: {
-                "Content-Type": contentType,
-                "Cache-Control": "public, max-age=31536000, immutable",
-                "X-Cache": "MISS",
-              },
-            });
-          }
-        } catch (err) {
-          console.warn(`Drive proxy fallback fetch failed for ID ${fileId}:`, err);
-        }
-
-        return new Response("Failed to fetch image from Google Drive", { status: 502 });
+        return new Response(image.data, {
+          headers: {
+            "Content-Type": image.contentType,
+            "Cache-Control": "public, max-age=31536000, immutable",
+            "X-Cache": hit ? "HIT" : "MISS",
+          },
+        });
       },
     },
   },

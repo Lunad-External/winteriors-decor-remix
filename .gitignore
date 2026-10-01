@@ -27,3 +27,5 @@ dist-ssr
 
 .output
 dist
+# Drive image disk cache
+.cache
