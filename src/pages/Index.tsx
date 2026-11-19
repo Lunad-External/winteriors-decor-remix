@@ -9,6 +9,7 @@ import { VideoGallery } from "@/components/home/VideoGallery";
 import { ClientsSection } from "@/components/home/ClientsSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { Helmet } from "react-helmet-async";
+import { ClientOnly } from "@tanstack/react-router";
 
 const Index = () => {
   return (
@@ -17,14 +18,16 @@ const Index = () => {
         <title>Winteriors Decor LLC | Premium Interior Design & Fit-Out Dubai & Abu Dhabi</title>
         <meta name="description" content="Winteriors Decor LLC - 17+ years of excellence in commercial interior design and fit-out solutions." />
       </Helmet>
-      <HeroSection />
-      <AboutPreview />
-      <StatsSection />
-      <ExpertiseSection />
-      <ProjectHighlights />
-      <VideoGallery />
-      <ClientsSection />
-      <TestimonialsSection />
+      <ClientOnly fallback={null}>
+        <HeroSection />
+        <AboutPreview />
+        <StatsSection />
+        <ExpertiseSection />
+        <ProjectHighlights />
+        <VideoGallery />
+        <ClientsSection />
+        <TestimonialsSection />
+      </ClientOnly>
     </Layout>
   );
 };

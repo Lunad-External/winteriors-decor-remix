@@ -9,7 +9,7 @@ interface EditableTextProps {
   contentKey: string;
   fallback: string;
   value?: string;
-  as?: "p" | "h1" | "h2" | "h3" | "h4" | "span" | "div";
+  as?: "p" | "h1" | "h2" | "h3" | "h4" | "span" | "div" | "b" | "strong" | "small" | "li" | "dt" | "dd" | "figcaption";
   className?: string;
   multiline?: boolean;
   page?: string;

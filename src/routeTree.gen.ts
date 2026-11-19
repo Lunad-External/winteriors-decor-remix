@@ -43,9 +43,9 @@ import { Route as DriveImageIdRouteImport } from './routes/drive-image.$id'
 import { Route as ProjectsIndexRouteImport } from './routes/projects.index'
 import { Route as ProjectsIdRouteImport } from './routes/projects.$id'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
-import { Route as ServicesCategorySlugRouteImport } from './routes/services.$categorySlug'
 import { Route as AdminProjectsIndexRouteImport } from './routes/admin.projects.index'
 import { Route as AdminProjectsIdRouteImport } from './routes/admin.projects.$id'
+import { Route as ServicesCategorySlugIndexRouteImport } from './routes/services.$categorySlug.index'
 import { Route as ServicesCategorySlugSubcategorySlugRouteImport } from './routes/services.$categorySlug.$subcategorySlug'
 import { Route as AdminProjectsIdEditRouteImport } from './routes/admin.projects.$id.edit'
 
@@ -219,11 +219,6 @@ const ServicesIndexRoute = ServicesIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ServicesRoute,
 } as any)
-const ServicesCategorySlugRoute = ServicesCategorySlugRouteImport.update({
-  id: '/$categorySlug',
-  path: '/$categorySlug',
-  getParentRoute: () => ServicesRoute,
-} as any)
 const AdminProjectsIndexRoute = AdminProjectsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -234,11 +229,17 @@ const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AdminProjectsRoute,
 } as any)
+const ServicesCategorySlugIndexRoute =
+  ServicesCategorySlugIndexRouteImport.update({
+    id: '/$categorySlug/',
+    path: '/$categorySlug/',
+    getParentRoute: () => ServicesRoute,
+  } as any)
 const ServicesCategorySlugSubcategorySlugRoute =
   ServicesCategorySlugSubcategorySlugRouteImport.update({
-    id: '/$subcategorySlug',
-    path: '/$subcategorySlug',
-    getParentRoute: () => ServicesCategorySlugRoute,
+    id: '/$categorySlug/$subcategorySlug',
+    path: '/$categorySlug/$subcategorySlug',
+    getParentRoute: () => ServicesRoute,
   } as any)
 const AdminProjectsIdEditRoute = AdminProjectsIdEditRouteImport.update({
   id: '/edit',
@@ -277,7 +278,6 @@ export interface FileRoutesByFullPath {
   '/blogs/$slug': typeof BlogsSlugRoute
   '/drive-image/$id': typeof DriveImageIdRoute
   '/projects/$id': typeof ProjectsIdRoute
-  '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -285,6 +285,7 @@ export interface FileRoutesByFullPath {
   '/admin/projects/$id': typeof AdminProjectsIdRouteWithChildren
   '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
+  '/services/$categorySlug/': typeof ServicesCategorySlugIndexRoute
   '/admin/projects/$id/edit': typeof AdminProjectsIdEditRoute
 }
 export interface FileRoutesByTo {
@@ -314,7 +315,6 @@ export interface FileRoutesByTo {
   '/blogs/$slug': typeof BlogsSlugRoute
   '/drive-image/$id': typeof DriveImageIdRoute
   '/projects/$id': typeof ProjectsIdRoute
-  '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin': typeof AdminIndexRoute
   '/blogs': typeof BlogsIndexRoute
   '/projects': typeof ProjectsIndexRoute
@@ -322,6 +322,7 @@ export interface FileRoutesByTo {
   '/admin/projects/$id': typeof AdminProjectsIdRouteWithChildren
   '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
   '/admin/projects': typeof AdminProjectsIndexRoute
+  '/services/$categorySlug': typeof ServicesCategorySlugIndexRoute
   '/admin/projects/$id/edit': typeof AdminProjectsIdEditRoute
 }
 export interface FileRoutesById {
@@ -356,7 +357,6 @@ export interface FileRoutesById {
   '/blogs/$slug': typeof BlogsSlugRoute
   '/drive-image/$id': typeof DriveImageIdRoute
   '/projects/$id': typeof ProjectsIdRoute
-  '/services/$categorySlug': typeof ServicesCategorySlugRouteWithChildren
   '/admin/': typeof AdminIndexRoute
   '/blogs/': typeof BlogsIndexRoute
   '/projects/': typeof ProjectsIndexRoute
@@ -364,6 +364,7 @@ export interface FileRoutesById {
   '/admin/projects/$id': typeof AdminProjectsIdRouteWithChildren
   '/services/$categorySlug/$subcategorySlug': typeof ServicesCategorySlugSubcategorySlugRoute
   '/admin/projects/': typeof AdminProjectsIndexRoute
+  '/services/$categorySlug/': typeof ServicesCategorySlugIndexRoute
   '/admin/projects/$id/edit': typeof AdminProjectsIdEditRoute
 }
 export interface FileRouteTypes {
@@ -399,7 +400,6 @@ export interface FileRouteTypes {
     | '/blogs/$slug'
     | '/drive-image/$id'
     | '/projects/$id'
-    | '/services/$categorySlug'
     | '/admin/'
     | '/blogs/'
     | '/projects/'
@@ -407,6 +407,7 @@ export interface FileRouteTypes {
     | '/admin/projects/$id'
     | '/services/$categorySlug/$subcategorySlug'
     | '/admin/projects/'
+    | '/services/$categorySlug/'
     | '/admin/projects/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -436,7 +437,6 @@ export interface FileRouteTypes {
     | '/blogs/$slug'
     | '/drive-image/$id'
     | '/projects/$id'
-    | '/services/$categorySlug'
     | '/admin'
     | '/blogs'
     | '/projects'
@@ -444,6 +444,7 @@ export interface FileRouteTypes {
     | '/admin/projects/$id'
     | '/services/$categorySlug/$subcategorySlug'
     | '/admin/projects'
+    | '/services/$categorySlug'
     | '/admin/projects/$id/edit'
   id:
     | '__root__'
@@ -477,7 +478,6 @@ export interface FileRouteTypes {
     | '/blogs/$slug'
     | '/drive-image/$id'
     | '/projects/$id'
-    | '/services/$categorySlug'
     | '/admin/'
     | '/blogs/'
     | '/projects/'
@@ -485,6 +485,7 @@ export interface FileRouteTypes {
     | '/admin/projects/$id'
     | '/services/$categorySlug/$subcategorySlug'
     | '/admin/projects/'
+    | '/services/$categorySlug/'
     | '/admin/projects/$id/edit'
   fileRoutesById: FileRoutesById
 }
@@ -760,13 +761,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ServicesIndexRouteImport
       parentRoute: typeof ServicesRoute
     }
-    '/services/$categorySlug': {
-      id: '/services/$categorySlug'
-      path: '/$categorySlug'
-      fullPath: '/services/$categorySlug'
-      preLoaderRoute: typeof ServicesCategorySlugRouteImport
-      parentRoute: typeof ServicesRoute
-    }
     '/admin/projects/': {
       id: '/admin/projects/'
       path: '/'
@@ -781,12 +775,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminProjectsIdRouteImport
       parentRoute: typeof AdminProjectsRoute
     }
+    '/services/$categorySlug/': {
+      id: '/services/$categorySlug/'
+      path: '/$categorySlug'
+      fullPath: '/services/$categorySlug/'
+      preLoaderRoute: typeof ServicesCategorySlugIndexRouteImport
+      parentRoute: typeof ServicesRoute
+    }
     '/services/$categorySlug/$subcategorySlug': {
       id: '/services/$categorySlug/$subcategorySlug'
-      path: '/$subcategorySlug'
+      path: '/$categorySlug/$subcategorySlug'
       fullPath: '/services/$categorySlug/$subcategorySlug'
       preLoaderRoute: typeof ServicesCategorySlugSubcategorySlugRouteImport
-      parentRoute: typeof ServicesCategorySlugRoute
+      parentRoute: typeof ServicesRoute
     }
     '/admin/projects/$id/edit': {
       id: '/admin/projects/$id/edit'
@@ -824,26 +825,17 @@ const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
   ProjectsRouteChildren,
 )
 
-interface ServicesCategorySlugRouteChildren {
-  ServicesCategorySlugSubcategorySlugRoute: typeof ServicesCategorySlugSubcategorySlugRoute
-}
-
-const ServicesCategorySlugRouteChildren: ServicesCategorySlugRouteChildren = {
-  ServicesCategorySlugSubcategorySlugRoute:
-    ServicesCategorySlugSubcategorySlugRoute,
-}
-
-const ServicesCategorySlugRouteWithChildren =
-  ServicesCategorySlugRoute._addFileChildren(ServicesCategorySlugRouteChildren)
-
 interface ServicesRouteChildren {
-  ServicesCategorySlugRoute: typeof ServicesCategorySlugRouteWithChildren
   ServicesIndexRoute: typeof ServicesIndexRoute
+  ServicesCategorySlugSubcategorySlugRoute: typeof ServicesCategorySlugSubcategorySlugRoute
+  ServicesCategorySlugIndexRoute: typeof ServicesCategorySlugIndexRoute
 }
 
 const ServicesRouteChildren: ServicesRouteChildren = {
-  ServicesCategorySlugRoute: ServicesCategorySlugRouteWithChildren,
   ServicesIndexRoute: ServicesIndexRoute,
+  ServicesCategorySlugSubcategorySlugRoute:
+    ServicesCategorySlugSubcategorySlugRoute,
+  ServicesCategorySlugIndexRoute: ServicesCategorySlugIndexRoute,
 }
 
 const ServicesRouteWithChildren = ServicesRoute._addFileChildren(

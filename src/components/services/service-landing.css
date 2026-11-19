@@ -1,0 +1,12 @@
+/* Site-specific adjustments on top of reference.generated.css (which is regenerated, so edit here). */
+
+/* The site header is fixed (logo h-14/h-16 + py-4), so content starts below it. */
+.svc { --header-h: 88px; padding-top: var(--header-h); }
+@media (min-width: 768px) { .svc { --header-h: 96px; } }
+
+/* Admin only: EditableText wraps text in an inline-block span; keep block text on its own line. */
+.svc .group\/editable:has(> :is(p, h1, h2, h3, h4, div, li, dt, dd, figcaption)),
+.svc :is(.fact, .stat-badge, .appr li, .enq-contacts, .calc-out) .group\/editable:has(> b) { display: block; }
+
+/* index.css sets tracking-tight on headings; the reference design uses normal spacing. */
+.svc h1, .svc h2, .svc h3, .svc h4 { letter-spacing: normal; }

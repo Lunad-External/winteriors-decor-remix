@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -24,6 +24,7 @@ const curatedHighlights = [
 
 export const ProjectHighlights = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
+  const [hydrated, setHydrated] = useState(false);
   const { projects, loading } = useStorageProjects();
   const { get } = useSiteContent();
   const { isAdmin } = useAuth();
@@ -34,6 +35,10 @@ export const ProjectHighlights = () => {
       .map(({ slug }) => projects.find((p) => p.id === slug))
       .filter(Boolean);
   })();
+
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   useEffect(() => {
     if (loading || featured.length === 0) return;
@@ -83,7 +88,7 @@ export const ProjectHighlights = () => {
           <EditableText contentKey="project_highlights_heading" fallback="Project Highlights" value={get("project_highlights_heading", "Project Highlights")} as="h2" className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground font-poppins" page="home" label="Project Highlights Heading" />
         </div>
         <div className="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 lg:gap-4">
-          {loading
+          {!hydrated || loading
             ? Array.from({ length: 6 }).map((_, i) => (
                 <div key={i} className="space-y-3">
                   <Skeleton className="aspect-[3/2] w-full" />

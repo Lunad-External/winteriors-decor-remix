@@ -4,6 +4,7 @@ import { Menu, X, Phone, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import winteriorsLogo from "@/assets/logos/winteriors-logo.png";
+import { isServiceLandingPath } from "@/data/servicePages";
 
 const services = [
   { name: "Interior Design", id: "interior-design" },
@@ -61,7 +62,8 @@ export const Header = () => {
 
   const pagesWithHero = ["/", "/about", "/services", "/clientele", "/contact", "/blogs", "/enquiry"];
   const isProjectDetail = location.pathname.startsWith("/projects/");
-  const isServicePage = location.pathname.startsWith("/services/");
+  // Redesigned service pages have a light hero, so they keep the solid header.
+  const isServicePage = location.pathname.startsWith("/services/") && !isServiceLandingPath(location.pathname);
   const hasHeroBehindHeader = pagesWithHero.includes(location.pathname) || isProjectDetail || isServicePage;
   const solidHeader = isScrolled || !hasHeroBehindHeader;
 

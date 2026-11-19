@@ -61,7 +61,7 @@ export const HeroSection = () => {
     <section ref={heroRef} className="relative h-screen min-h-[600px] overflow-hidden">
       {heroSlides.map((slide, index) => (
         <div key={index} className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? "opacity-100" : "opacity-0"}`}>
-          <img src={slide.image} alt={slide.title} className="w-full h-full object-cover crisp-image" loading={index === 0 ? "eager" : "lazy"} fetchPriority={index === 0 ? "high" : "auto"} />
+          <img src={slide.image} alt={slide.title} className="w-full h-full object-cover crisp-image" loading={index === 0 ? "eager" : "lazy"} fetchpriority={index === 0 ? "high" : "auto"} />
         </div>
       ))}
       <div className="relative z-10 h-full flex items-end pb-28 md:pb-32">

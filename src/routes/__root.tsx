@@ -1,4 +1,5 @@
 import "@/lib/ssr-polyfill";
+import { Suspense } from "react";
 import {
   ClientOnly,
   createRootRouteWithContext,
@@ -159,7 +160,11 @@ function AppShell() {
           <PageTransition>
             <Outlet />
           </PageTransition>
-          <Footer />
+          <ClientOnly fallback={null}>
+            <Suspense fallback={null}>
+              <Footer />
+            </Suspense>
+          </ClientOnly>
           <ClientOnly fallback={null}>
             <WhatsAppFloat />
             <CallFloat />
