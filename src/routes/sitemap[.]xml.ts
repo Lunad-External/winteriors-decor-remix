@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { blogs } from "@/data/blogs";
+import { serviceHierarchy } from "@/data/serviceHierarchy";
+import { supabase } from "@/integrations/supabase/client";
+import { getStorageProjectsFn, type StorageProjectDTO } from "@/lib/public-data.functions";
 import { SITE_URL } from "@/lib/seo";
 
 interface SitemapEntry {
@@ -24,13 +27,42 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/enquiry", changefreq: "yearly", priority: "0.6" },
         ];
 
-        const blogEntries: SitemapEntry[] = blogs.map((b) => ({
-          path: `/blogs/${b.slug}`,
+        // DB reads mirror the public pages; a failed read drops only that group, never the whole sitemap.
+        const loadDbBlogs = async () => {
+          const { data } = await supabase.from("blogs").select("slug").eq("is_published", true);
+          return (data ?? []) as { slug: string }[];
+        };
+        const [projects, dbBlogs] = await Promise.all([
+          getStorageProjectsFn().catch((): StorageProjectDTO[] => []),
+          loadDbBlogs().catch((): { slug: string }[] => []),
+        ]);
+
+        const serviceEntries: SitemapEntry[] = serviceHierarchy.flatMap((cat) => [
+          { path: `/services/${cat.slug}`, changefreq: "monthly", priority: "0.8" },
+          ...cat.subcategories.map((sub): SitemapEntry => ({
+            path: `/services/${cat.slug}/${sub.slug}`,
+            changefreq: "monthly",
+            priority: "0.7",
+          })),
+        ]);
+
+        const projectEntries: SitemapEntry[] = projects.map((p): SitemapEntry => ({
+          path: `/projects/${p.id}`,
+          changefreq: "monthly",
+          priority: "0.7",
+        }));
+
+        const blogSlugs = [...blogs.map((b) => b.slug), ...dbBlogs.map((b) => b.slug)];
+        const blogEntries: SitemapEntry[] = blogSlugs.map((slug): SitemapEntry => ({
+          path: `/blogs/${slug}`,
           changefreq: "monthly",
           priority: "0.6",
         }));
 
-        const entries = [...staticEntries, ...blogEntries];
+        const seen = new Set<string>();
+        const entries = [...staticEntries, ...serviceEntries, ...projectEntries, ...blogEntries].filter(
+          (e) => !seen.has(e.path) && seen.add(e.path),
+        );
 
         const urls = entries.map((e) =>
           [
