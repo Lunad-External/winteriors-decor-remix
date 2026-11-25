@@ -133,6 +133,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        {/* framer-motion SSRs initial opacity:0 inline; without JS it never animates in */}
+        <noscript>
+          <style>{`[style*="opacity:0"]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
       </head>
       <body suppressHydrationWarning>
         {children}
@@ -160,11 +164,9 @@ function AppShell() {
           <PageTransition>
             <Outlet />
           </PageTransition>
-          <ClientOnly fallback={null}>
-            <Suspense fallback={null}>
-              <Footer />
-            </Suspense>
-          </ClientOnly>
+          <Suspense fallback={null}>
+            <Footer />
+          </Suspense>
           <ClientOnly fallback={null}>
             <WhatsAppFloat />
             <CallFloat />
