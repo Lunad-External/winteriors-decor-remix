@@ -29,3 +29,8 @@ dist-ssr
 dist
 # Drive image disk cache
 .cache
+
+# Secrets and database dumps: never commit (see .env.example and docs/SERVER.md)
+.env
+*.backup
+*.dump

@@ -44,7 +44,8 @@ jobs:
             npm run build
 
             echo "Restarting PM2..."
-            pm2 restart winteriors-ssr || pm2 start .output/server/index.mjs --name winteriors-ssr --node-args="--env-file=.env"
+            # Server settings live outside the repo (see docs/SERVER.md); deploys never touch them.
+            pm2 restart winteriors-ssr || pm2 start .output/server/index.mjs --name winteriors-ssr --node-args="--env-file=$HOME/.config/winteriors/app.env"
 
             pm2 save
 
