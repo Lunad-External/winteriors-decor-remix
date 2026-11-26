@@ -93,7 +93,7 @@ pm2 restart winteriors-ssr
 
 ## Deploys
 
-Merging to `main` runs `.github/workflows/deploy.yml`: it builds on GitHub, then on the server runs `git pull`, `npm ci`, `npm run build` and `pm2 restart winteriors-ssr`.
+Merging to `main` runs `.github/workflows/deploy.yml`: it builds on GitHub, then on the server runs `git pull`, `npm ci`, `npm run build`, `scripts/migrate.sh` (database changes) and `pm2 restart winteriors-ssr`.
 
 A green run is not proof the site updated: the server script does not stop on errors. After a deploy, check the "Deploy to VPS via SSH" step's log for `Aborting` or `npm error`, and load the site.
 
@@ -101,14 +101,17 @@ Do not edit tracked files on the server: `git pull` then aborts and the old code
 
 ## Changing the database structure
 
-The database does not change when code is deployed. For a new table or column:
+Database changes are applied by the deploy pipeline. Every deploy runs `scripts/migrate.sh` after the build and before the restart: it backs up the database, then applies each file in `db/migrations/` that is not yet listed in the `schema_migrations` table, in file-name order. Each file runs in one transaction with its record, so a failing file changes nothing; the deploy then stops and the previous version keeps running (the run shows red).
 
-1. Write the change as a SQL file in the repo, e.g. `db/migrations/2026-12-01_add_project_location.sql`. Prefer additive changes (new nullable columns) so the running code keeps working.
-2. Apply it to your local database and test.
-3. Before merging: back up production (`~/backups/backup-db.sh`), then apply the SQL on the server with `psql -h 127.0.0.1 -U winteriors_app -d winteriors -f <file>`.
-4. Merge; the deploy ships code that expects the new structure.
+For a new table or column:
 
-Never rename or drop a column in the same deploy as the code that stops using it.
+1. Add a SQL file named `db/migrations/YYYY-MM-DD_what_it_does.sql`. Prefer additive changes (`CREATE TABLE IF NOT EXISTS`, new nullable columns) so the running code keeps working.
+2. Test it locally: `ENV_FILE=.env.local bash scripts/migrate.sh`.
+3. Merge. The pipeline applies it before the new code starts.
+
+Never edit a migration file after it has been merged (it will not run again); add a new file instead. Never rename or drop a column in the same deploy as the code that stops using it.
+
+To see what has been applied: `psql -h 127.0.0.1 -U winteriors_app -d winteriors -c "select * from schema_migrations"`.
 
 ## Local development
 
