@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { executeDbQuery } from "@/lib/db.server";
+import { currentAdmin } from "@/lib/auth.server";
 
 export interface SyncDriveInput {
   scanOnly?: boolean;
@@ -71,6 +72,7 @@ const DEFAULT_PROJECT_SLUGS = [
 export const syncDriveFn = createServerFn({ method: "POST" })
   .validator((input: SyncDriveInput) => input)
   .handler(async ({ data: input }) => {
+    if (!(await currentAdmin())) throw new Error("Drive sync requires an admin login");
     const scanOnly = input.scanOnly === true || input.action === "scan";
     const max = input.max || 15;
     const apiKey = process.env.GOOGLE_API_KEY || process.env.VITE_GOOGLE_API_KEY;

@@ -35,7 +35,26 @@ export interface QueryOptions {
   onConflict?: string;
 }
 
+const IDENT = /^[A-Za-z_][A-Za-z0-9_]*$/;
+
+/** Table and column names are pasted into SQL, so only plain identifiers are allowed. */
+export function invalidIdentifier(o: QueryOptions): string | null {
+  const names: unknown[] = [
+    o.table,
+    ...(o.columns && o.columns.trim() !== '*' ? o.columns.split(',').map(c => c.trim()) : []),
+    ...(o.filters ?? []).map(f => f.column),
+    ...(o.order ?? []).map(x => x.column),
+    ...(o.onConflict ? o.onConflict.split(',').map(c => c.trim()) : []),
+    ...(o.orConditions ? o.orConditions.split(',').map(part => part.split('.eq.')[0]) : []),
+    ...[o.data].flat().filter(r => r && typeof r === 'object').flatMap(r => Object.keys(r)),
+  ];
+  const bad = names.find(n => typeof n !== 'string' || !IDENT.test(n));
+  return bad === undefined ? null : String(bad);
+}
+
 export async function executeDbQuery(opts: QueryOptions) {
+  const badName = invalidIdentifier(opts);
+  if (badName !== null) return { data: null, error: { message: `Invalid identifier: ${badName}`, code: 'invalid_identifier' } };
   const p = getDbPool();
   const { table, action, data, filters = [], orConditions, order = [], limit, offset, single, maybeSingle, onConflict } = opts;
 
