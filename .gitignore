@@ -30,7 +30,6 @@ dist
 # Drive image disk cache
 .cache
 
-# Secrets and database dumps: never commit (see .env.example and docs/SERVER.md)
-.env
+# Database dumps contain customer data: never commit (see docs/SERVER.md)
 *.backup
 *.dump

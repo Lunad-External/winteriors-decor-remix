@@ -1,6 +1,6 @@
 # Server and database guide
 
-How the live site at https://www.winteriorsdecor.com runs, where its settings and data are, and how to change them safely. No secrets are stored in this file: passwords and keys live on the server and in the company password manager.
+How the live site at https://www.winteriorsdecor.com runs, where its settings and data are, and how to change them safely. No secrets are stored in this file. By company decision, the repo's `.env` holds the same values as the server's settings file.
 
 ## At a glance
 
@@ -38,7 +38,11 @@ nano ~/.config/winteriors/app.env
 pm2 restart winteriors-ssr
 ```
 
-Never put settings in the repo's `.env`: it is git-ignored, the server does not read it, and anything committed ends up on GitHub.
+The repo's `.env` is a committed copy of the server's active settings (company decision). The server does **not** read it, so deploys can never change the live settings. When you change a setting on the server, update `.env` in the repo to match.
+
+The repository is public, so everything in `.env` is visible to anyone. The database only accepts connections from the server itself, which limits the use of its password; API keys in `.env` can be used by anyone and should be restricted in their provider's console.
+
+For local development, put your own values in `.env.local` (git-ignored); it overrides `.env`.
 
 Check which database the app will use (password hidden):
 
