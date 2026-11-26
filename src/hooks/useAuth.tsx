@@ -1,10 +1,14 @@
-import { useState, useEffect, useCallback, createContext, useContext, ReactNode } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import type { User, Session } from "@supabase/supabase-js";
+import { useState, useEffect, createContext, useContext, ReactNode } from "react";
+import { currentAdminFn, loginFn, logoutFn } from "@/lib/auth.functions";
+
+/** The logged-in admin, as confirmed by the server (session cookie). */
+export interface AdminUser {
+  id: string;
+  email: string;
+}
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: AdminUser | null;
   loading: boolean;
   isAdmin: boolean;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
@@ -15,77 +19,37 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  const checkAdmin = useCallback(async (userId: string) => {
-    try {
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId)
-        .eq("role", "admin")
-        .maybeSingle();
-      setIsAdmin(!!data || true);
-    } catch {
-      setIsAdmin(true);
-    }
-  }, []);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        checkAdmin(session.user.id);
-      }
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        checkAdmin(session.user.id);
-      } else {
-        setIsAdmin(false);
-      }
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, [checkAdmin]);
+    currentAdminFn()
+      .then(setUser)
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false));
+  }, []);
 
   const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (!error && data?.session) {
-      setSession(data.session);
-      setUser(data.session.user);
-      setIsAdmin(true);
+    try {
+      const res = await loginFn({ data: { email, password } });
+      if ("error" in res) return { error: new Error(res.error) };
+      setUser(res.admin);
+      return { error: null };
+    } catch {
+      return { error: new Error("Login failed. Please try again.") };
     }
-    return { error: error as Error | null };
   };
 
-  const signUp = async (email: string, password: string, fullName?: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: fullName } },
-    });
-    return { error: error as Error | null };
-  };
+  // Admin accounts are created on the server (scripts/create-admin.mjs), not from the website.
+  const signUp = async () => ({ error: new Error("Sign-up is disabled. Ask an administrator for an account.") });
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setSession(null);
+    await logoutFn().catch(() => undefined);
     setUser(null);
-    setIsAdmin(false);
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, isAdmin, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, loading, isAdmin: !!user, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );

@@ -63,7 +63,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
           </div>
           <h1 className="text-2xl font-bold mb-2">Access Denied</h1>
           <p className="text-muted-foreground mb-6">You don't have admin privileges.</p>
-          <Button variant="outline" onClick={() => { signOut(); navigate("/admin/login"); }}>
+          <Button variant="outline" onClick={async () => { await signOut(); navigate("/admin/login"); }}>
             Sign Out
           </Button>
         </div>
@@ -116,7 +116,7 @@ export function AdminLayout({ children }: { children: ReactNode }) {
             <ArrowLeft className="w-[18px] h-[18px]" /> View Live Site
           </Link>
           <button
-            onClick={() => { signOut(); navigate("/admin/login"); }}
+            onClick={async () => { await signOut(); navigate("/admin/login"); }}
             className="flex items-center gap-3 px-3 py-2.5 text-sm text-background/50 hover:text-background rounded-lg hover:bg-background/10 transition-colors w-full"
           >
             <LogOut className="w-[18px] h-[18px]" /> Sign Out
