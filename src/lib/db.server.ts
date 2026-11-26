@@ -11,7 +11,8 @@ export function getDbPool() {
 
     pool = new pg.Pool({
       connectionString,
-      ssl: { rejectUnauthorized: false },
+      // SSL only when the URL asks for it (Neon: sslmode=require); a Postgres on the same server has none.
+      ssl: connectionString.includes("sslmode=") ? { rejectUnauthorized: false } : false,
       max: 10,
       idleTimeoutMillis: 30000,
     });
