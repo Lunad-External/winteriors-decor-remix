@@ -43,6 +43,10 @@ jobs:
             echo "Building SSR app..."
             npm run build
 
+            echo "Applying database migrations..."
+            # New tables/columns must exist before the new code starts (see docs/SERVER.md).
+            bash scripts/migrate.sh || { echo "Migration failed: deploy stopped, the previous version keeps running"; exit 1; }
+
             echo "Restarting PM2..."
             # Server settings live outside the repo (see docs/SERVER.md); deploys never touch them.
             pm2 restart winteriors-ssr || pm2 start .output/server/index.mjs --name winteriors-ssr --node-args="--env-file=$HOME/.config/winteriors/app.env"
