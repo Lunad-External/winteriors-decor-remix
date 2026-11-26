@@ -1,4 +1,7 @@
+import { useState } from "react";
 import { Layout } from "@/components/layout/Layout";
+import { useToast } from "@/hooks/use-toast";
+import { submitFormFn } from "@/lib/email.functions";
 import { PageHero } from "@/components/common/PageHero";
 import { EditableText } from "@/components/common/EditableText";
 import { motion } from "framer-motion";
@@ -11,8 +14,43 @@ import { offices } from "@/data/contact";
 import { useSiteContent } from "@/hooks/useSiteContent";
 import heroContact from "@/assets/hero-contact.jpg";
 
+const EMPTY_FORM = { name: "", email: "", phone: "", company: "", message: "" };
+
 const ContactPage = () => {
   const { get } = useSiteContent();
+  const { toast } = useToast();
+  const [form, setForm] = useState(EMPTY_FORM);
+  const [submitting, setSubmitting] = useState(false);
+
+  const updateField = (field: keyof typeof EMPTY_FORM, value: string) =>
+    setForm((prev) => ({ ...prev, [field]: value }));
+
+  // Saves the message and emails the team (same path as Contact Us and the service pages).
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim() || !form.phone.trim() || !form.message.trim()) {
+      toast({ title: "Missing fields", description: "Please fill in all required fields", variant: "destructive" });
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await submitFormFn({
+        data: {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          company: form.company.trim() || undefined,
+          message: form.message.trim(),
+          type: "Contact",
+        },
+      });
+      toast({ title: "Message sent!", description: "We'll get back to you within one business day." });
+      setForm(EMPTY_FORM);
+    } catch (err) {
+      toast({ title: "Error", description: err instanceof Error ? err.message : "Failed to send message", variant: "destructive" });
+    }
+    setSubmitting(false);
+  };
 
   return (
     <Layout>
@@ -43,17 +81,19 @@ const ContactPage = () => {
             <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="bg-secondary p-8 md:p-12 lg:p-16">
               <EditableText contentKey="contact_form_heading" fallback="Send Us a Message" value={get("contact_form_heading")} as="h2" className="text-2xl md:text-3xl font-bold mb-2 font-poppins" page="contact" label="Form Heading" />
               <EditableText contentKey="contact_form_subtitle" fallback="Fill out the form below and we'll get back to you shortly." value={get("contact_form_subtitle")} as="p" className="text-muted-foreground mb-8" page="contact" label="Form Subtitle" />
-              <form className="space-y-6">
+              <form className="space-y-6" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input placeholder="Your Name*" className="bg-card border-border" required />
-                  <Input type="email" placeholder="Email Address*" className="bg-card border-border" required />
+                  <Input aria-label="Your name" placeholder="Your Name*" className="bg-card border-border" required value={form.name} onChange={(e) => updateField("name", e.target.value)} />
+                  <Input aria-label="Email address" type="email" placeholder="Email Address*" className="bg-card border-border" required value={form.email} onChange={(e) => updateField("email", e.target.value)} />
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input type="tel" placeholder="Phone Number*" className="bg-card border-border" required />
-                  <Input placeholder="Company Name" className="bg-card border-border" />
+                  <Input aria-label="Phone number" type="tel" placeholder="Phone Number*" className="bg-card border-border" required value={form.phone} onChange={(e) => updateField("phone", e.target.value)} />
+                  <Input aria-label="Company name" placeholder="Company Name" className="bg-card border-border" value={form.company} onChange={(e) => updateField("company", e.target.value)} />
                 </div>
-                <Textarea placeholder="Your Message*" rows={5} className="bg-card border-border" required />
-                <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary/90">Send Message</Button>
+                <Textarea aria-label="Your message" placeholder="Your Message*" rows={5} className="bg-card border-border" required value={form.message} onChange={(e) => updateField("message", e.target.value)} />
+                <Button type="submit" size="lg" className="w-full bg-primary hover:bg-primary/90" disabled={submitting}>
+                  {submitting ? "Sending..." : "Send Message"}
+                </Button>
               </form>
             </motion.div>
           </div>

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Upload, CheckCircle, Loader2 } from "lucide-react";
 import { useSiteContent } from "@/hooks/useSiteContent";
-import { supabase } from "@/integrations/supabase/client";
+import { submitFormFn } from "@/lib/email.functions";
 import { useToast } from "@/hooks/use-toast";
 import heroEnquiry from "@/assets/hero-enquiry.jpg";
 
@@ -50,45 +50,23 @@ const EnquiryPage = () => {
     setSubmitting(true);
 
     try {
-      const enquiryId = crypto.randomUUID();
-      const submittedAt = new Date().toISOString();
-
-      const { error } = await supabase.from("enquiries").insert({
-        id: enquiryId,
-        name: form.name.trim(),
-        email: form.email.trim(),
-        phone: form.phone.trim(),
-        company: form.company.trim() || null,
-        message: form.message.trim(),
-      } as any);
-
-      if (error) throw error;
-
-      // Fire notification email — non-blocking, never breaks the form
-      try {
-        await supabase.functions.invoke("send-transactional-email", {
-          body: {
-            templateName: "enquiry-notification",
-            recipientEmail: "info@winteriorsdecor.com",
-            idempotencyKey: `enquiry-notify-${enquiryId}`,
-            templateData: {
-              name: form.name.trim(),
-              email: form.email.trim(),
-              phone: form.phone.trim(),
-              company: form.company.trim() || undefined,
-              message: form.message.trim(),
-              submittedAt,
-            },
-          },
-        });
-      } catch (emailErr) {
-        console.error("Notification email failed (enquiry was saved):", emailErr);
-      }
+      // Saves the enquiry and emails the team (same path as Contact Us and the service pages).
+      // shortcut: attachments are not sent; nginx's 1 MB request limit would reject most files. Send them once that limit is raised.
+      await submitFormFn({
+        data: {
+          name: form.name.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim(),
+          company: form.company.trim() || undefined,
+          message: form.message.trim(),
+          type: "Enquiry",
+        },
+      });
 
       setSubmitted(true);
       toast({ title: "Enquiry sent!", description: "We'll get back to you within one business day." });
-    } catch (err: any) {
-      toast({ title: "Error", description: err.message || "Failed to send enquiry", variant: "destructive" });
+    } catch (err) {
+      toast({ title: "Error", description: err instanceof Error ? err.message : "Failed to send enquiry", variant: "destructive" });
     }
 
     setSubmitting(false);
