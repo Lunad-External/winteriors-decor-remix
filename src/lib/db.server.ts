@@ -123,10 +123,11 @@ export async function executeDbQuery(opts: QueryOptions) {
       }
       valueTuples.push(`(${tuple.join(', ')})`);
     }
-    const conflictCol = onConflict || 'id';
-    const updateCols = keys.filter(k => k !== conflictCol).map(k => `"${k}" = EXCLUDED."${k}"`).join(', ');
+    // onConflict may list several columns, e.g. "project_slug,file_name" (Supabase convention).
+    const conflictCols = (onConflict || 'id').split(',').map(c => c.trim());
+    const updateCols = keys.filter(k => !conflictCols.includes(k)).map(k => `"${k}" = EXCLUDED."${k}"`).join(', ');
     const doUpdate = updateCols ? `DO UPDATE SET ${updateCols}` : 'DO NOTHING';
-    sql = `INSERT INTO public."${table}" (${colNames}) VALUES ${valueTuples.join(', ')} ON CONFLICT ("${conflictCol}") ${doUpdate} RETURNING *`;
+    sql = `INSERT INTO public."${table}" (${colNames}) VALUES ${valueTuples.join(', ')} ON CONFLICT (${conflictCols.map(c => `"${c}"`).join(', ')}) ${doUpdate} RETURNING *`;
   } else if (action === 'update') {
     const keys = Object.keys(data || {});
     if (keys.length === 0) return { data: [], error: null };
