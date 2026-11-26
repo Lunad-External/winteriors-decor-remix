@@ -4,10 +4,9 @@ let pool: pg.Pool | null = null;
 
 export function getDbPool() {
   if (!pool) {
-    const connectionString =
-      process.env.DB_Connection ||
-      process.env.DATABASE_URL ||
-      "postgresql://neondb_owner:npg_VqNK0XaC2yDH@ep-spring-night-b7hncdq1-pooler.c-13.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+    const connectionString = process.env.DB_Connection || process.env.DATABASE_URL;
+    // Fail loudly: a silent fallback once pointed the site at an old database.
+    if (!connectionString) throw new Error("Database not configured: set DB_Connection or DATABASE_URL (see .env.example)");
 
     pool = new pg.Pool({
       connectionString,

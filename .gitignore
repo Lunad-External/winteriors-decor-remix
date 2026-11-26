@@ -29,3 +29,7 @@ dist-ssr
 dist
 # Drive image disk cache
 .cache
+
+# Database dumps contain customer data: never commit (see docs/SERVER.md)
+*.backup
+*.dump
